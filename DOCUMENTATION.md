@@ -1,7 +1,7 @@
 # GAD-BOT: Architecture & System Documentation
 
 > **General Administration Department (GAD) · Government of Chhattisgarh (`FG2` Module)**  
-> **Last Automated Update:** `2026-11-24 15:00:41`  
+> **Last Automated Update:** `2026-11-24 17:13:06`  
 > **Documentation Engine:** `scripts/update_docs.py` (Auto-updated on startup / on demand)
 
 ---
@@ -327,7 +327,7 @@ python scripts/update_docs.py
 
 ## 11. Live System Telemetry & Status
 
-*(Automatically generated at `2026-11-24 15:00:41`)*
+*(Automatically generated at `2026-11-24 17:13:06`)*
 
 | Component | Status | Metrics / Details |
 |---|---|---|

@@ -87,6 +87,18 @@ class EvalRunner:
                         except ModuleNotFoundError:
                             from eval.components.hybrid_retrieval import evaluate_hybrid_retrieval
                         fn = evaluate_hybrid_retrieval
+                    elif component_id == "ingestion_ocr":
+                        try:
+                            from core.eval.components.ingestion_ocr import evaluate_ingestion_ocr
+                        except ModuleNotFoundError:
+                            from eval.components.ingestion_ocr import evaluate_ingestion_ocr
+                        fn = evaluate_ingestion_ocr
+                    elif component_id == "query_preprocessing":
+                        try:
+                            from core.eval.components.query_preprocessing import evaluate_query_preprocessing
+                        except ModuleNotFoundError:
+                            from eval.components.query_preprocessing import evaluate_query_preprocessing
+                        fn = evaluate_query_preprocessing
                     else:
                         raise NotImplementedError(f"Evaluator for {component_id} is not yet registered.")
 
