@@ -1,0 +1,19 @@
+TASK: Decide the type of this document.
+Read the title lines. Choose exactly ONE value:
+"GR"           = Government Resolution (शासन निर्णय)
+"CIRCULAR"     = परिपत्रक / Circular
+"NOTIFICATION" = अधिसूचना / Notification
+"ORDER"        = आदेश / Order
+"LETTER"       = पत्र / कार्यालयीन ज्ञापन / Office Memorandum / Letter
+"CORRIGENDUM"  = शुद्धिपत्रक / शुद्धिपत्र / corrigendum / सुधारणा
+"RULES"        = नियम / Rules
+"OTHER"
+
+TEXT (first 25 lines):
+{{top_lines}}
+
+EXAMPLE
+TEXT: "महाराष्ट्र शासन / सामान्य प्रशासन विभाग / शासन निर्णय क्रमांक: …"
+OUTPUT: {"quote":"शासन निर्णय क्रमांक","doc_type":"GR"}
+
+OUTPUT SCHEMA: {"quote": string, "doc_type": one of the values above}

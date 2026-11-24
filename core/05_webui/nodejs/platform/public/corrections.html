@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Verified corrections</title>
+  <link rel="icon" href="../../img/cg-emblem.png">
+  <link rel="stylesheet" href="../../design-system.css">
+  <link rel="stylesheet" href="../../platform-assets/platform.css">
+  <link rel="stylesheet" href="../../platform-assets/corrections.css?v=1">
+</head>
+<body>
+  <header><a class="brand" href="./"><img src="../../img/cg-emblem.png" alt=""><b id="correction-department">Department</b><span>Verified corrections</span></a><nav><a href="./">← Back to chat</a></nav></header>
+  <main class="wrap"><div id="correction-workspace"></div></main>
+  <script src="../../platform-assets/platform.js"></script>
+  <script src="../../platform-assets/corrections-ui.js?v=1"></script>
+  <script>
+    fetch('api/session',{credentials:'same-origin'}).then(r=>r.json()).then(data=>{
+      if(data.department) document.getElementById('correction-department').textContent=data.department.name;
+    }).catch(()=>{});
+    window.VerifiedCorrections.mount(document.getElementById('correction-workspace'),{api:'api/corrections',login:'login'});
+  </script>
+</body>
+</html>

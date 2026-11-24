@@ -1,0 +1,28 @@
+/* The chat itself uses /chat-ui.css (the original bot stylesheet). Only the
+   department navigation and embedded management panels need adaptations. */
+.department-chat #main { min-width:0; }
+.department-chat [data-pane="ask"] { display:flex; flex:1; flex-direction:column; min-height:0; }
+.department-chat #chat-pane { min-height:0; }
+.department-chat .brand { text-decoration:none; color:inherit; }
+.department-chat .brand img.gov-logo { width:40px; height:40px; }
+.department-chat .brand-name { overflow-wrap:anywhere; }
+.department-chat button.nav-link { border:0; background:transparent; text-align:left; font-family:inherit; cursor:pointer; flex-shrink:0; }
+.department-chat button.nav-link.on { background:var(--navy-tint); color:var(--navy); }
+.department-chat #chat-messages > .msg { padding:0; border:0; background:transparent; max-width:none; align-self:auto; }
+.department-chat .department-workspace { margin:24px; overflow:auto; max-height:calc(100vh - 48px); }
+.department-chat .department-sources { display:flex; flex-direction:column; gap:6px; padding-top:10px; font-size:13px; }
+.department-chat .department-sources a { color:var(--navy); text-decoration:none; }
+.department-chat .department-sources a:hover { text-decoration:underline; }
+.department-chat .table-wrap { max-width:100%; }
+.department-mobile-bar { display:none; }
+#dept-loading { position:fixed; inset:0; display:grid; place-items:center; color:var(--text-2); }
+#dept-backdrop { position:fixed; inset:0; z-index:40; background:rgba(27,36,48,.35); border:0; }
+@media (max-width:760px) {
+  .department-mobile-bar { display:flex; align-items:center; gap:12px; padding:10px 16px; background:var(--bg); border-bottom:1px solid var(--border); flex-shrink:0; }
+  .department-mobile-bar button { border:1px solid var(--border); border-radius:var(--r-sm); background:var(--bg); color:var(--navy); padding:6px 10px; font:inherit; }
+  .department-mobile-bar span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; }
+  .department-nav-open #sidebar { display:flex; position:fixed; inset:0 auto 0 0; width:min(300px, 85vw); z-index:50; box-shadow:var(--shadow-lg); }
+  .department-chat .department-workspace { margin:12px; max-height:calc(100dvh - 80px); }
+  .department-chat .msg-content { max-width:88%; }
+}
+@media (min-width:761px) { #dept-backdrop { display:none; } }

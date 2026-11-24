@@ -1,0 +1,13 @@
+﻿query_id,query,gold_passage_ids,query_language,doc_language,is_exact_match_query
+HR001,स्थानांतरण नीति 2026-27 के मुख्य प्रावधान और अनुसूचित क्षेत्रों में न्यूनतम सेवा अवधि,"[""63dfd3acb3182dc5_c001"", ""63dfd3acb3182dc5_c002""]",hi,hi,False
+HR002,What is the maximum Child Care Leave (CCL) period permitted for women employees?,"[""bab670ac612f4f79_c001""]",en,hi,False
+HR003,अधिसूचना क्रमांक RULE/297/2025-GAD-3 के तहत किए गए संशोधन,"[""ecc05b64348b4c77_c001""]",hi,hi,True
+HR004,Dearness Allowance rates revision order effective 01.07.2025 in seventh pay commission,"[""efc290b78f6c8ad7_c001"", ""efc290b78f6c8ad7_c002""]",en,hi,False
+HR005,vacancy circular No. A-12025/12/2010-Adm.I dated 2010-07-19 Planning Commission,"[""0007f1071c2918fc_c001""]",en,en,True
+HR006,अनुकंपा नियुक्ति के लिए आश्रित परिवार के आवेदन प्रस्तुत करने की समय सीमा,"[""18ee1d1997164968_c001""]",hi,hi,False
+HR007,CHiPS State Data Centre uptime SLA requirements and cloud hosting guarantees,"[""5f369c50ead865ab_c001"", ""5f369c50ead865ab_c002""]",en,en,False
+HR008,deputation guidelines for state government employees to autonomous bodies,"[""678e98966a2c4c56_c001""]",en,hi,False
+HR009,circular No. 1329 dated 23.09.2026 general circulars and notifications,"[""bab670ac612f4f79_c002""]",en,hi,True
+HR010,दिव्यांग शासकीय सेवकों के लिए विशेष वाहन भत्ता पात्रता एवं दरें,"[""18ee1d1997164968_c003""]",hi,hi,False
+HR011,who is Shri Anupam Ashish Toppo and what is his current designation?,"[""63dfd3acb3182dc5_c024""]",en,hi,False
+HR012,विभागीय पदोन्नति समिति (DPC) की नियमित बैठक आयोजित करने के निर्देश,"[""45b4b2ca681a4c0d_c001""]",hi,hi,False

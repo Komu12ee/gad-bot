@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create department account</title>
+  <link rel="icon" href="../../img/cg-emblem.png" />
+  <link rel="stylesheet" href="../../design-system.css" />
+  <link rel="stylesheet" href="../../platform-assets/platform.css" />
+</head>
+<body>
+  <div class="login-wrap">
+    <form class="login-card" id="form" autocomplete="on">
+      <div class="brand-row">
+        <img src="../../img/cg-emblem.png" alt="" />
+        <div>
+          <h1 id="dept-name">Department</h1>
+          <div class="sub">Create your account</div>
+        </div>
+      </div>
+      <div class="signup-fields" id="fields">
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" autocomplete="username" spellcheck="false"
+                 autocapitalize="none" minlength="3" maxlength="32" pattern="[A-Za-z0-9._\-]{3,32}"
+                 title="3 to 32 characters: letters, digits, dot, dash or underscore" required />
+          <div class="hint">3–32 characters: letters, digits, dot, dash or underscore.</div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="new-password"
+                 minlength="8" maxlength="128" required />
+          <div class="hint">At least 8 characters.</div>
+        </div>
+        <div class="field">
+          <label for="confirm-password">Confirm password</label>
+          <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password"
+                 minlength="8" maxlength="128" required />
+        </div>
+      </div>
+      <div class="msg-box err hidden" id="msg" role="status" aria-live="polite"></div>
+      <button class="primary" id="submit" type="submit">Create account</button>
+      <div class="signup-success hidden" id="done" role="status">
+        <h2>Account created</h2>
+        <p id="done-msg"></p>
+        <a class="mini" href="login">Go to sign in</a>
+      </div>
+      <div class="hint" id="signin-hint">Already have an account? <a class="auth-link" href="login">Sign in</a></div>
+    </form>
+  </div>
+  <script src="../../platform-assets/platform.js"></script>
+  <script src="../../platform-assets/dept-signup.js"></script>
+</body>
+</html>

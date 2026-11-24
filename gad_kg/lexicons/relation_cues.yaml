@@ -1,0 +1,32 @@
+SUPERSEDES:
+  en: ["supersede", "supersedes", "superseded", "in supersession of", "in place of", "stands replaced", "replaces"]
+  hi: ["अधिक्रमित", "के स्थान पर", "की जगह", "निरस्त करते हुए", "अतिक्रमित", "प्रतिस्थापित"]
+  mr: ["अधिक्रमित", "ऐवजी", "च्या जागी", "अधिक्रमित करण्यात"]
+AMENDS:
+  en: ["in partial modification", "partly modified", "amended", "is amended", "substitute", "omit", "insert", "shall be read as", "read as", "modified as follows"]
+  hi: ["आंशिक संशोधन", "आंशिक रूप से संशोधित", "संशोधन", "निम्नानुसार पढ़ें", "के स्थान पर पढ़ा जाए", "जोड़ा जाए", "विलोपित"]
+  mr: ["अंशतः बदल", "सुधारणा", "ऐवजी वाचावे", "खालीलप्रमाणे वाचावे", "समाविष्ट"]
+RESCINDS:
+  en: ["rescind", "rescinded", "cancelled", "canceled", "withdrawn", "revoked", "hereby cancelled"]
+  hi: ["रद्द", "निरस्त", "निरसित", "वापस लिया", "प्रत्याहरित"]
+  mr: ["रद्द", "निरसित", "मागे घेण्यात"]
+CLARIFIES:
+  en: ["clarification", "clarified", "it is clarified", "for the removal of doubts"]
+  hi: ["स्पष्टीकरण", "स्पष्ट किया जाता है"]
+  mr: ["स्पष्टीकरण", "स्पष्ट करण्यात"]
+EXTENDS:
+  en: ["extended up to", "extension of", "extended till", "validity extended"]
+  hi: ["अवधि बढ़ाई", "विस्तार", "समय सीमा बढ़ा"]
+  mr: ["मुदतवाढ", "मुदत वाढविण्यात"]
+CORRECTS:
+  en: ["corrigendum", "typographical error", "clerical error", "correction"]
+  hi: ["शुद्धिपत्र", "शुद्धि पत्र", "त्रुटि"]
+  mr: ["शुद्धिपत्रक", "शुद्धिपत्र", "चूक"]
+IMPLEMENTS:
+  en: ["in pursuance of", "in compliance with", "in accordance with the order of", "in terms of"]
+  hi: ["के अनुपालन में", "के अनुसरण में", "के अनुसार"]
+  mr: ["च्या अनुषंगाने", "च्या अनुपालनार्थ", "च्या आदेशानुसार"]
+REFERS_TO_BLOCK_START:
+  en: ["Read:", "Reference:", "References:", "Ref:", "Ref.:", "Refer:"]
+  hi: ["संदर्भ", "पढ़ें", "सन्दर्भ"]
+  mr: ["वाचा", "संदर्भ"]

@@ -1,0 +1,27 @@
+# config.yaml
+paths:
+  raw_md: data/raw_md
+  clean: data/clean
+  work: data/work
+llm:
+  base_url: http://103.51.8.88/v1
+  model: ocr-32b
+  temperature_greedy: 0.0
+  temperature_vote: 0.4
+  votes: 3                  # 1 greedy + 2 sampled
+  max_concurrency: 16
+  max_tokens_default: 600
+  structured_output: true
+embedding:
+  model: BAAI/bge-m3        # dense (1024-d) + sparse
+reranker:
+  model: BAAI/bge-reranker-v2-m3
+stores:
+  graph: neo4j://localhost:7687
+  vectors: qdrant           # local or docker
+  tables: duckdb file data/work/tables.duckdb
+thresholds:
+  ocr_quality_min: 0.80
+  dedup_jaccard: 0.90
+  fuzzy_number_match: 0.92
+  subject_embed_sim: 0.80

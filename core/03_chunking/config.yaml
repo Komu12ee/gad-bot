@@ -1,0 +1,23 @@
+# CHiPS-RAG Document Chunking & Ingestion Configuration
+
+chunking:
+  target_tokens: 400
+  max_tokens: 480
+  overlap_tokens: 50
+  min_tokens: 60
+  max_rows_per_table_chunk: 15
+
+llm:
+  enabled: true
+  base_url: "http://127.0.0.1:8000/v1"
+  model: "Qwen/Qwen3-32B-FP8"
+  temperature: 0.0
+  timeout_seconds: 30
+
+qdrant:
+  mode: "remote" # 'remote' or 'local'
+  host: "127.0.0.1"
+  port: 6333
+  chunks_collection: "chips_chunks"
+  cards_collection: "chips_doc_cards"
+  vector_size: 1024

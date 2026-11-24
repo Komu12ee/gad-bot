@@ -1,0 +1,12 @@
+TASK: Describe this table so it can be stored in a database. You see only the header and the first rows.
+Do NOT output any rows.
+For each column give: "name_raw" (as written), "name_en" (short English name, snake_case),
+"type" (text|int|float|date|amount|percent), "unit" (e.g. "INR", "%", "posts", or null).
+"table_kind": "list_of_posts"|"pay_scale"|"allowance_rates"|"eligibility"|"schedule"|"annexure_list"|"other".
+
+CAPTION / HEADING ABOVE: {{caption}}
+HEADER + FIRST 3 ROWS (markdown):
+{{table_head}}
+
+OUTPUT SCHEMA: {"title_en":string,"title_hi":string|null,
+ "columns":[{"name_raw":string,"name_en":string,"type":string,"unit":string|null}],"table_kind":string}

@@ -1,0 +1,18 @@
+TASK: Pick the number that identifies THIS document (its own reference number).
+It is usually near the top ("क्रमांक", "संख्या", "No.", "F.No.", "GR No.") or
+next to the signature at the end.
+Do NOT choose numbers from the Reference / संदर्भ / वाचा list, they belong to
+OTHER documents. Do NOT choose phone numbers, years, amounts or page numbers.
+
+CANDIDATES (found by a program; each has an id):
+{{numbered_candidates_with_context}}
+
+If none is the document's own number, answer null.
+
+EXAMPLE
+CANDIDATES:
+Candidate 1: (line 3, top) "क्रमांक: सामान्य-2021/प्र.क्र.45/18"
+Candidate 2: (line 12, reference block) "शासन निर्णय क्र. सामान्य-2019/प्र.क्र.9/18"
+OUTPUT: {"quote":"क्रमांक: सामान्य-2021/प्र.क्र.45/18","choice":1}
+
+OUTPUT SCHEMA: {"quote": string|null, "choice": integer|null}

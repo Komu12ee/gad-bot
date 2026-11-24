@@ -1,0 +1,12 @@
+EFFECTIVE_FROM:
+  en: ["with effect from", "w.e.f", "effective from", "shall come into force", "from the date of issue", "from the date of this"]
+  hi: ["से लागू", "दिनांक .* से प्रभावी", "प्रभावी होगा", "जारी होने की दिनांक से"]
+  mr: ["पासून लागू", "प्रभावी", "निर्गमित झाल्याच्या दिनांकापासून"]
+EFFECTIVE_TO:
+  en: ["valid up to", "valid till", "until", "upto"]
+  hi: ["तक मान्य", "तक वैध", "पर्यंत"]
+  mr: ["पर्यंत वैध", "पर्यंत"]
+RETROSPECTIVE:
+  en: ["retrospective", "retrospectively", "with retrospective effect"]
+  hi: ["पूर्व प्रभाव से", "पूर्वव्यापी"]
+  mr: ["पूर्वलक्षी प्रभावाने"]

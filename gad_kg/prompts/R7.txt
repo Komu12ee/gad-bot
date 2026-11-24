@@ -1,0 +1,10 @@
+TASK: Choose up to 3 topics that best describe this document. Choose ONLY from the list.
+If none fits, return an empty list.
+
+TOPICS (id: English / Hindi):
+{{topics_list}}
+
+DOCUMENT SUBJECT: {{subject}}
+DOCUMENT SUMMARY (first 600 words of the operative part): {{operative_text}}
+
+OUTPUT SCHEMA: {"topic_ids": [string, ...]}   // max 3, each from the list

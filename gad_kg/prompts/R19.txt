@@ -1,0 +1,5 @@
+TASK: From the excerpt, write {{n}} different questions that a clerk might ask, whose answers are fully in the excerpt.
+Make them: 1 factual (number/date/amount), 1 procedural, 1 using different words than the excerpt (paraphrase).
+Write each question in {{language}}. For each give the exact answer and the exact quote that proves it.
+EXCERPT [{{chunk_label}}]: {{chunk_text}}
+OUTPUT SCHEMA: {"items":[{"question":string,"answer":string,"quote":string,"type":"factual"|"procedural"|"paraphrase"}]}

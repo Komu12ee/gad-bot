@@ -1,0 +1,10 @@
+TASK: Pick the ISSUE DATE of THIS document.
+It is the date printed with the document's own number, or the date beside the
+signature ("दिनांक", "Date", "Dated", "Place, date").
+Do NOT choose dates from the Reference list, dates of events, effective dates
+("with effect from"), or deadlines.
+
+CANDIDATES:
+{{numbered_date_candidates_with_context}}
+
+OUTPUT SCHEMA: {"quote": string|null, "choice": integer|null}

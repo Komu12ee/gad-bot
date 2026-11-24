@@ -1,0 +1,9 @@
+TASK: Write ONE DuckDB SQL query that answers the question from the tables below.
+Use only these tables and columns. Use "value_num" for numbers. Return only the SQL in "sql".
+If the tables cannot answer the question, return "sql": null.
+
+TABLE CATALOG:
+{{relevant_table_schemas_with_3_sample_rows_each}}
+
+QUESTION: {{question}}
+OUTPUT SCHEMA: {"sql": string|null}

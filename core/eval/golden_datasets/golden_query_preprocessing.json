@@ -1,0 +1,107 @@
+[
+  {
+    "query_id": "QP001",
+    "query": "अनुकंपा नियुक्ति के लिए आवेदन करने की अंतिम समय सीमा क्या है?",
+    "true_language": "hi",
+    "true_intent": "general",
+    "expected_expansion_terms": "[\"अनुकंपा नियुक्ति\", \"समय सीमा\", \"समय अवधि\", \"compassionate appointment\"]"
+  },
+  {
+    "query_id": "QP002",
+    "query": "What are the rules for Child Care Leave (CCL) for female government servants in Chhattisgarh?",
+    "true_language": "en",
+    "true_intent": "general",
+    "expected_expansion_terms": "[\"child care leave\", \"ccl\", \"महिला शासकीय सेवक\", \"संतान पालन अवकाश\"]"
+  },
+  {
+    "query_id": "QP003",
+    "query": "karmachariyon ko 1 july 2025 se da kitne percent milega?",
+    "true_language": "hinglish",
+    "true_intent": "number",
+    "expected_expansion_terms": "[\"महंगाई भत्ता\", \"dearness allowance\", \"da rate\", \"प्रतिशत\"]"
+  },
+  {
+    "query_id": "QP004",
+    "query": "GAD ke transfer policy 2026-27 ke bare me sabhi circulars aur orders dikhayein",
+    "true_language": "hinglish",
+    "true_intent": "catalogue",
+    "expected_expansion_terms": "[\"स्थानांतरण नीति\", \"transfer policy\", \"परिपत्र\", \"आदेश\"]"
+  },
+  {
+    "query_id": "QP005",
+    "query": "List all gazetted notifications issued under the IAS establishment section in 2025",
+    "true_language": "en",
+    "true_intent": "catalogue",
+    "expected_expansion_terms": "[\"ias establishment\", \"notification\", \"अधिसूचना\", \"राजपत्र\"]"
+  },
+  {
+    "query_id": "QP006",
+    "query": "सामान्य प्रशासन विभाग में वर्तमान में कुल कितने अनुभाग कार्यरत हैं?",
+    "true_language": "hi",
+    "true_intent": "count",
+    "expected_expansion_terms": "[\"अनुभाग\", \"संख्या\", \"sections count\", \"प्रशासनिक संरचना\"]"
+  },
+  {
+    "query_id": "QP007",
+    "query": "How many retired IAS officers are currently empanelled for departmental inquiries?",
+    "true_language": "en",
+    "true_intent": "count",
+    "expected_expansion_terms": "[\"retired ias\", \"empanelled\", \"सेवानिवृत्त आईएएस\", \"विभागीय जांच\"]"
+  },
+  {
+    "query_id": "QP008",
+    "query": "सातवें वेतनमान के तहत स्वीकृत महंगाई भत्ते की दर क्या है?",
+    "true_language": "hi",
+    "true_intent": "number",
+    "expected_expansion_terms": "[\"सातवां वेतनमान\", \"महंगाई भत्ता\", \"da rate\", \"50%\"]"
+  },
+  {
+    "query_id": "QP009",
+    "query": "What is the budget ceiling in crores for SDC cloud infrastructure in 2025-26?",
+    "true_language": "en",
+    "true_intent": "number",
+    "expected_expansion_terms": "[\"budget ceiling\", \"crores\", \"sdc cloud\", \"बजट प्रावधान\"]"
+  },
+  {
+    "query_id": "QP010",
+    "query": "Namaste! Kaise hain aap aur aap kya kar sakte hain?",
+    "true_language": "hinglish",
+    "true_intent": "greeting",
+    "expected_expansion_terms": "[]"
+  },
+  {
+    "query_id": "QP011",
+    "query": "Good morning, I need help navigating government circulars.",
+    "true_language": "en",
+    "true_intent": "greeting",
+    "expected_expansion_terms": "[]"
+  },
+  {
+    "query_id": "QP012",
+    "query": "नमस्ते, क्या आप मेरी सहायता कर सकते हैं?",
+    "true_language": "hi",
+    "true_intent": "greeting",
+    "expected_expansion_terms": "[]"
+  },
+  {
+    "query_id": "QP013",
+    "query": "divyang karmachariyon ke vahan bhatta ke niyam bataiye",
+    "true_language": "hinglish",
+    "true_intent": "general",
+    "expected_expansion_terms": "[\"दिव्यांग\", \"वाहन भत्ता\", \"conveyance allowance\", \"नियम\"]"
+  },
+  {
+    "query_id": "QP014",
+    "query": "What are the rules regarding deputation of state officers to the Central Government?",
+    "true_language": "en",
+    "true_intent": "general",
+    "expected_expansion_terms": "[\"deputation\", \"central government\", \"प्रतिनियुक्ति\", \"केन्द्र सरकार\"]"
+  },
+  {
+    "query_id": "QP015",
+    "query": "अर्जित अवकाश (Earned Leave) संचय करने की अधिकतम सीमा कितने दिवस है?",
+    "true_language": "hi",
+    "true_intent": "number",
+    "expected_expansion_terms": "[\"अर्जित अवकाश\", \"earned leave\", \"संचय सीमा\", \"300 दिवस\"]"
+  }
+]

@@ -1,0 +1,12 @@
+TASK: In ONE sentence, say what this excerpt covers, so a search engine can find it
+without the rest of the document. Examples of "covers": eligibility conditions,
+amount of allowance, procedure for application, effective date, list of posts (table),
+exceptions, definitions.
+Then give 4 English keywords and 4 Hindi keywords that appear in or are clearly meant
+by the excerpt. Do not add facts that are not in the excerpt.
+
+DOCUMENT: {{doc_type}} {{doc_number_raw}} dated {{issue_date}} — {{subject}}
+EXCERPT:
+{{chunk_text}}
+
+OUTPUT SCHEMA: {"covers": string, "keywords_en": [string,...], "keywords_hi": [string,...]}

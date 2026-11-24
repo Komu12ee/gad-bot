@@ -1,0 +1,72 @@
+[
+  {
+    "query_id": "CB001",
+    "query": "स्थानांतरण नीति 2026-27 के तहत अनुसूचित क्षेत्रों में न्यूनतम पदस्थापना अवधि",
+    "ranked_passage_ids": "[\"63dfd3acb3182dc5_c001\", \"63dfd3acb3182dc5_c002\", \"efc290b78f6c8ad7_c001\"]",
+    "gold_passage_ids": "[\"63dfd3acb3182dc5_c001\"]",
+    "gold_answer_span": "अनुसूचित क्षेत्रों (बस्तर एवं सरगुजा संभाग) में पदस्थ शासकीय सेवकों की न्यूनतम पदावधि 3 वर्ष निर्धारित की जाती है।"
+  },
+  {
+    "query_id": "CB002",
+    "query": "संतान पालन अवकाश (Child Care Leave) की कुल अनुमेय अवधि",
+    "ranked_passage_ids": "[\"bab670ac612f4f79_c001\", \"18ee1d1997164968_c001\"]",
+    "gold_passage_ids": "[\"bab670ac612f4f79_c001\"]",
+    "gold_answer_span": "महिला शासकीय सेवकों को उनकी संपूर्ण सेवाकाल में अधिकतम 730 दिनों का संतान पालन अवकाश दो ज्येष्ठतम जीवित संतानों के 18 वर्ष की आयु प्राप्त करने तक देय होगा।"
+  },
+  {
+    "query_id": "CB003",
+    "query": "1 जुलाई 2025 से महंगाई भत्ता की स्वीकृत दर",
+    "ranked_passage_ids": "[\"efc290b78f6c8ad7_c001\", \"45b4b2ca681a4c0d_c001\"]",
+    "gold_passage_ids": "[\"efc290b78f6c8ad7_c001\"]",
+    "gold_answer_span": "दिनांक 01.07.2025 से 46% के स्थान पर 50% की दर से महंगाई भत्ता स्वीकृत किया जाता है।"
+  },
+  {
+    "query_id": "CB004",
+    "query": "अनुकंपा नियुक्ति हेतु आवेदन प्रस्तुत करने की समय सीमा",
+    "ranked_passage_ids": "[\"18ee1d1997164968_c001\", \"678e98966a2c4c56_c001\"]",
+    "gold_passage_ids": "[\"18ee1d1997164968_c001\"]",
+    "gold_answer_span": "आवेदन मृत्यु दिनांक से अधिकतम 45 दिवस के भीतर प्रस्तुत किया जाना आवश्यक है।"
+  },
+  {
+    "query_id": "CB005",
+    "query": "State Data Centre core hosting uptime commitment",
+    "ranked_passage_ids": "[\"5f369c50ead865ab_c001\", \"0007f1071c2918fc_c001\"]",
+    "gold_passage_ids": "[\"5f369c50ead865ab_c001\"]",
+    "gold_answer_span": "Core Hosting Infrastructure SLA Target: 99.982% with < 5 ms Latency Guarantee."
+  },
+  {
+    "query_id": "CB006",
+    "query": "Shri Anupam Ashish Toppo current administrative assignment",
+    "ranked_passage_ids": "[\"63dfd3acb3182dc5_c024\", \"45b4b2ca681a4c0d_c001\"]",
+    "gold_passage_ids": "[\"63dfd3acb3182dc5_c024\"]",
+    "gold_answer_span": "डिप्टी कलेक्टर रायपुर (पदभार 30.07.2025) एवं ओएसडी मंत्री वित्त विभाग (16.03.2026)"
+  },
+  {
+    "query_id": "CB007",
+    "query": "Staff Selection Board amendment rule number",
+    "ranked_passage_ids": "[\"ecc05b64348b4c77_c001\", \"bab670ac612f4f79_c002\"]",
+    "gold_passage_ids": "[\"ecc05b64348b4c77_c001\"]",
+    "gold_answer_span": "विभागीय समसंख्यक अधिसूचना क्रमांक RULE/297/2025-GAD-3"
+  },
+  {
+    "query_id": "CB008",
+    "query": "Planning Commission Vacancy Circular date and number",
+    "ranked_passage_ids": "[\"0007f1071c2918fc_c001\", \"678e98966a2c4c56_c001\"]",
+    "gold_passage_ids": "[\"0007f1071c2918fc_c001\"]",
+    "gold_answer_span": "Vacancy Circular | No. A-12025/12/2010-Adm.I | Dated 2010-07-19"
+  },
+  {
+    "query_id": "CB009",
+    "query": "दिव्यांग कर्मचारियों हेतु विशेष वाहन भत्ता दर",
+    "ranked_passage_ids": "[\"18ee1d1997164968_c003\", \"efc290b78f6c8ad7_c001\"]",
+    "gold_passage_ids": "[\"18ee1d1997164968_c003\"]",
+    "gold_answer_span": "दिव्यांग शासकीय सेवकों को प्रतिमाह ₹1,500 विशेष वाहन भत्ता देय होगा।"
+  },
+  {
+    "query_id": "CB010",
+    "query": "अर्जित अवकाश संचय की उच्चतम सीमा",
+    "ranked_passage_ids": "[\"bab670ac612f4f79_c001\", \"63dfd3acb3182dc5_c002\"]",
+    "gold_passage_ids": "[\"bab670ac612f4f79_c001\"]",
+    "gold_answer_span": "शासकीय सेवक अपने खाते में अधिकतम 300 दिवस का अर्जित अवकाश संचित कर सकते हैं।"
+  }
+]

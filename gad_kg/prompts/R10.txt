@@ -1,0 +1,63 @@
+TASK: Decide whether THIS document does something to ANOTHER document in this sentence.
+"THIS document" = the document you are reading: {{this_doc_label}}.
+
+RELATION TYPES (choose from these exact words)
+SUPERSEDES    THIS document replaces an earlier document.  Cues: supersedes, in supersession of, in place of,
+              अधिक्रमित, के स्थान पर, निरस्त करते हुए, सर्व पूर्वीचे आदेश
+SUPERSEDED_BY a LATER document replaces THIS one.  Cue: "is superseded by".
+AMENDS        THIS changes a PART of an earlier document.  Cues: in partial modification of, amended as follows,
+              substitute, omit, insert, read as, आंशिक संशोधन, निम्नानुसार संशोधन, ऐवजी वाचावे
+AMENDED_BY    a later document changes part of THIS one.
+RESCINDS      THIS cancels / withdraws an earlier document.  Cues: rescinded, cancelled, withdrawn, रद्द, निरसित, मागे घेण्यात
+RESCINDED_BY  a later document cancels THIS one.
+CLARIFIES     THIS explains how to read an earlier document.  Cues: clarification, स्पष्टीकरण
+CLARIFIED_BY  a later document explains THIS one.
+EXTENDS       THIS extends the period or coverage of an earlier document.  Cues: extended up to, मुदतवाढ, अवधि बढ़ाई
+EXTENDED_BY   a later document extends THIS one.
+CORRECTS      THIS fixes an error in an earlier document.  Cues: corrigendum, शुद्धिपत्र, typographical error
+CORRECTED_BY  a later document fixes an error in THIS one.
+IMPLEMENTS    THIS gives effect to a higher instrument (Act, Rule, court order, higher GR).  Cues: in pursuance of,
+              in compliance with, के अनुपालन में, उच्च न्यायालयाच्या आदेशानुसार
+REFERS_TO     only mentions another document as background.  This is the DEFAULT if no stronger cue exists.
+NONE          the sentence does not point to another document (for example it only mentions a clause of THIS circular).
+
+DECISION RULES
+1. Ask: who does the action? "This GR supersedes X" -> SUPERSEDES. "X stands superseded by this GR" -> SUPERSEDES.
+   "This GR is superseded by Y" -> SUPERSEDED_BY.
+2. If several types fit, prefer in this order: RESCINDS, SUPERSEDES, AMENDS, CORRECTS, EXTENDS, CLARIFIES,
+   IMPLEMENTS, REFERS_TO.
+3. "scope": "whole" only if the sentence replaces/cancels the entire document ("in supersession of the GR dated …",
+   "all earlier orders"). "partial" if only a paragraph, clause, table, amount, word or rule number is changed.
+   Otherwise "unknown". When "partial", copy the part into "scope_text" (e.g. "para 4(b)").
+4. "target_kind": DOCUMENT (GR, circular, notification, order, letter), ACT_RULE (an Act, Rule, Regulation),
+   COURT_ORDER, or UNKNOWN.
+5. If the sentence points to a numbered reference ("संदर्भ क्र. 3", "reference (3)"), set target_ref_idx to that number
+   and use the REFERENCE MAP below. Otherwise put the number/date exactly as written in target_number_raw / target_date_raw.
+6. One sentence may contain several relations. Return all (maximum 5).
+
+REFERENCE MAP OF THIS DOCUMENT:
+{{ref_map}}
+
+PREVIOUS SENTENCE: {{prev_sentence}}
+SENTENCE: {{sentence}}
+NEXT SENTENCE: {{next_sentence}}
+
+EXAMPLE 1
+SENTENCE: "शासन निर्णय दिनांक 05 जून 2019 मधील परिच्छेद 4 (ब) ऐवजी खालील मजकूर वाचावा."
+OUTPUT: {"relations":[{"quote":"शासन निर्णय दिनांक 05 जून 2019 मधील परिच्छेद 4 (ब) ऐवजी खालील मजकूर वाचावा.",
+ "relation":"AMENDS","target_kind":"DOCUMENT","target_ref_idx":null,"target_number_raw":null,
+ "target_date_raw":"05 जून 2019","target_subject_raw":null,"scope":"partial","scope_text":"परिच्छेद 4 (ब)"}]}
+
+EXAMPLE 2
+SENTENCE: "This Government Resolution supersedes the Resolution at reference (2) in its entirety."
+OUTPUT: {"relations":[{"quote":"This Government Resolution supersedes the Resolution at reference (2) in its entirety.",
+ "relation":"SUPERSEDES","target_kind":"DOCUMENT","target_ref_idx":2,"target_number_raw":null,
+ "target_date_raw":null,"target_subject_raw":null,"scope":"whole","scope_text":null}]}
+
+EXAMPLE 3
+SENTENCE: "The pay shall be fixed as per clause 3 above."
+OUTPUT: {"relations":[]}
+
+OUTPUT SCHEMA: {"relations":[{"quote":string,"relation":<type>,"target_kind":string,
+ "target_ref_idx":integer|null,"target_number_raw":string|null,"target_date_raw":string|null,
+ "target_subject_raw":string|null,"scope":"whole"|"partial"|"unknown","scope_text":string|null}]}

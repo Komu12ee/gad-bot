@@ -1,0 +1,16 @@
+﻿query_id,query,true_language,true_intent,expected_expansion_terms
+QP001,अनुकंपा नियुक्ति के लिए आवेदन करने की अंतिम समय सीमा क्या है?,hi,general,"[""अनुकंपा नियुक्ति"", ""समय सीमा"", ""समय अवधि"", ""compassionate appointment""]"
+QP002,What are the rules for Child Care Leave (CCL) for female government servants in Chhattisgarh?,en,general,"[""child care leave"", ""ccl"", ""महिला शासकीय सेवक"", ""संतान पालन अवकाश""]"
+QP003,karmachariyon ko 1 july 2025 se da kitne percent milega?,hinglish,number,"[""महंगाई भत्ता"", ""dearness allowance"", ""da rate"", ""प्रतिशत""]"
+QP004,GAD ke transfer policy 2026-27 ke bare me sabhi circulars aur orders dikhayein,hinglish,catalogue,"[""स्थानांतरण नीति"", ""transfer policy"", ""परिपत्र"", ""आदेश""]"
+QP005,List all gazetted notifications issued under the IAS establishment section in 2025,en,catalogue,"[""ias establishment"", ""notification"", ""अधिसूचना"", ""राजपत्र""]"
+QP006,सामान्य प्रशासन विभाग में वर्तमान में कुल कितने अनुभाग कार्यरत हैं?,hi,count,"[""अनुभाग"", ""संख्या"", ""sections count"", ""प्रशासनिक संरचना""]"
+QP007,How many retired IAS officers are currently empanelled for departmental inquiries?,en,count,"[""retired ias"", ""empanelled"", ""सेवानिवृत्त आईएएस"", ""विभागीय जांच""]"
+QP008,सातवें वेतनमान के तहत स्वीकृत महंगाई भत्ते की दर क्या है?,hi,number,"[""सातवां वेतनमान"", ""महंगाई भत्ता"", ""da rate"", ""50%""]"
+QP009,What is the budget ceiling in crores for SDC cloud infrastructure in 2025-26?,en,number,"[""budget ceiling"", ""crores"", ""sdc cloud"", ""बजट प्रावधान""]"
+QP010,Namaste! Kaise hain aap aur aap kya kar sakte hain?,hinglish,greeting,[]
+QP011,"Good morning, I need help navigating government circulars.",en,greeting,[]
+QP012,"नमस्ते, क्या आप मेरी सहायता कर सकते हैं?",hi,greeting,[]
+QP013,divyang karmachariyon ke vahan bhatta ke niyam bataiye,hinglish,general,"[""दिव्यांग"", ""वाहन भत्ता"", ""conveyance allowance"", ""नियम""]"
+QP014,What are the rules regarding deputation of state officers to the Central Government?,en,general,"[""deputation"", ""central government"", ""प्रतिनियुक्ति"", ""केन्द्र सरकार""]"
+QP015,अर्जित अवकाश (Earned Leave) संचय करने की अधिकतम सीमा कितने दिवस है?,hi,number,"[""अर्जित अवकाश"", ""earned leave"", ""संचय सीमा"", ""300 दिवस""]"

@@ -1,0 +1,11 @@
+TASK: Read ONE excerpt and extract only the facts that help answer the question.
+If the excerpt does not help, return an empty list.
+Each fact must include an exact quote from the excerpt. Do not use knowledge from outside the excerpt.
+
+QUESTION: {{question}}
+EXCERPT LABEL: {{chunk_label}}      // e.g. [D3 | GR 45/2021 | 2021-03-12 | clause 4]
+EXCERPT:
+{{chunk_text}}
+
+OUTPUT SCHEMA: {"facts":[{"fact": string (one short sentence in the language of the question),
+ "quote": string, "contains_number_or_date": boolean}]}

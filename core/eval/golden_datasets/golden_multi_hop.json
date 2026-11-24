@@ -1,0 +1,74 @@
+[
+  {
+    "query_id": "MH001",
+    "query": "What are the active rules regarding deputation pay for officers selected on deputation, and which earlier memo was amended?",
+    "hops_required": 2,
+    "gold_chain_passage_ids": "[\"doc_8ad897545d1d4e85_c001\", \"doc_678e98966a2c4c56_c001\"]",
+    "gold_final_answer": "Deputation pay is regulated under DoPT Office Memorandum No. 6/08/2009-Estt.(Pay-II) dated 17.06.2010, as formally amended by subsequent notification dated 27.07.2026. The new order supersedes earlier ad-hoc allowance ceilings.",
+    "supersession_pairs": "{\"doc_8ad897545d1d4e85\": \"doc_678e98966a2c4c56\"}",
+    "expected_current_rule_id": "doc_678e98966a2c4c56"
+  },
+  {
+    "query_id": "MH002",
+    "query": "What is the standing rate of Dearness Allowance for Chhattisgarh government employees, and when was the 46% rate superseded?",
+    "hops_required": 2,
+    "gold_chain_passage_ids": "[\"doc_da_46_old_c001\", \"doc_da_50_new_c001\"]",
+    "gold_final_answer": "The active standing rate of Dearness Allowance is 50%, effective 01.07.2025. This superseded the previous 46% rate granted under earlier finance order dated 01.01.2025.",
+    "supersession_pairs": "{\"doc_da_46_old\": \"doc_da_50_new\"}",
+    "expected_current_rule_id": "doc_da_50_new"
+  },
+  {
+    "query_id": "MH003",
+    "query": "How were the recruitment rules for the post of Assistant Library & Information Officer modified from the 2013 circular?",
+    "hops_required": 2,
+    "gold_chain_passage_ids": "[\"doc_cf64c5c547a44771_c001\", \"doc_359fbfd517894655_c001\"]",
+    "gold_final_answer": "The circular dated 24.06.2014 modified the earlier advertisement dated 03.10.2013 by revising the educational qualifications and extending the application deadline by 30 days.",
+    "supersession_pairs": "{\"doc_cf64c5c547a44771\": \"doc_359fbfd517894655\"}",
+    "expected_current_rule_id": "doc_359fbfd517894655"
+  },
+  {
+    "query_id": "MH004",
+    "query": "Under what authority were the Chhattisgarh Staff Selection Board rules amended in 2026, and which notification was modified?",
+    "hops_required": 2,
+    "gold_chain_passage_ids": "[\"doc_15c4282110614350_c001\", \"doc_ecc05b64348b4c77_c001\"]",
+    "gold_final_answer": "Notification No. RULE/297/2025-GAD-3 dated 14.09.2026 exercised powers under Article 309 of the Constitution and Section 3(4) of the Board Act 2026 to amend earlier notification dated 15.01.2025.",
+    "supersession_pairs": "{\"doc_15c4282110614350\": \"doc_ecc05b64348b4c77\"}",
+    "expected_current_rule_id": "doc_ecc05b64348b4c77"
+  },
+  {
+    "query_id": "MH005",
+    "query": "What is the minimum tenure for officers in scheduled areas under the transfer policy 2026-27, and how does it compare to the 2022 policy?",
+    "hops_required": 2,
+    "gold_chain_passage_ids": "[\"doc_transfer_policy_2022_c001\", \"doc_transfer_policy_2026_c001\"]",
+    "gold_final_answer": "Under Transfer Policy 2026-27 (Order 14-2/2026), the minimum tenure in scheduled areas is 3 years. This superseded the 2-year tenure guideline from the 2022 policy.",
+    "supersession_pairs": "{\"doc_transfer_policy_2022\": \"doc_transfer_policy_2026\"}",
+    "expected_current_rule_id": "doc_transfer_policy_2026"
+  },
+  {
+    "query_id": "MH006",
+    "query": "Which circular superseded the 2018 guidelines regarding compassionate appointment application deadlines?",
+    "hops_required": 2,
+    "gold_chain_passage_ids": "[\"doc_comp_app_2018_c001\", \"doc_comp_app_2024_c001\"]",
+    "gold_final_answer": "The revised 2024 compassionate appointment circular reduced the application submission window to 45 days, superseding the 90-day window allowed under the 2018 memo.",
+    "supersession_pairs": "{\"doc_comp_app_2018\": \"doc_comp_app_2024\"}",
+    "expected_current_rule_id": "doc_comp_app_2024"
+  },
+  {
+    "query_id": "MH007",
+    "query": "Trace the career postings of Shri Anupam Ashish Toppo from Deputy Collector Dhamtari to his current assignment in Mantralaya.",
+    "hops_required": 3,
+    "gold_chain_passage_ids": "[\"doc_posting_dhamtari_c001\", \"doc_posting_raipur_c001\", \"doc_posting_osd_mantralaya_c001\"]",
+    "gold_final_answer": "Shri Anupam Ashish Toppo served as Deputy Collector Dhamtari, was subsequently transferred as Deputy Collector Raipur effective 30.07.2025, and appointed OSD to the Hon. Finance Minister in Mantralaya effective 16.03.2026.",
+    "supersession_pairs": "{\"doc_posting_dhamtari\": \"doc_posting_raipur\", \"doc_posting_raipur\": \"doc_posting_osd_mantralaya\"}",
+    "expected_current_rule_id": "doc_posting_osd_mantralaya"
+  },
+  {
+    "query_id": "MH008",
+    "query": "What are the latest revised rates for uniform allowance for fourth class employees, and which order was replaced?",
+    "hops_required": 2,
+    "gold_chain_passage_ids": "[\"doc_uniform_old_c001\", \"doc_uniform_new_c001\"]",
+    "gold_final_answer": "The revised uniform allowance is ₹3,000 per annum under Finance Order dated 12.04.2025, replacing the previous ₹2,000 rate fixed in 2021.",
+    "supersession_pairs": "{\"doc_uniform_old\": \"doc_uniform_new\"}",
+    "expected_current_rule_id": "doc_uniform_new"
+  }
+]

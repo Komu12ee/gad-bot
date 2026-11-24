@@ -1,0 +1,9 @@
+TASK: Copy the subject line of the document.
+Look for "विषय", "Subject", "Sub:" or the bold title under the department name.
+Copy it exactly in "subject". Then write a short English version in "subject_en"
+(if the subject is already English, repeat it).
+
+TEXT (first 30 lines):
+{{top_lines}}
+
+OUTPUT SCHEMA: {"subject": string|null, "subject_en": string|null}

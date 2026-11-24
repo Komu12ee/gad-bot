@@ -1,0 +1,13 @@
+TASK: This single line is one item from the "References" list of a document.
+Extract what it says about the OTHER document it points to.
+
+ITEM:
+{{reference_item_text}}
+
+EXAMPLE
+ITEM: "3) शासन निर्णय क्रमांक सामान्य-2019/प्र.क्र.9/18, दिनांक 05 जून 2019"
+OUTPUT: {"number_raw":"सामान्य-2019/प्र.क्र.9/18","date_raw":"05 जून 2019","subject_raw":null,"doc_type_guess":"GR"}
+
+OUTPUT SCHEMA: {"number_raw": string|null, "date_raw": string|null,
+ "subject_raw": string|null,
+ "doc_type_guess": "GR"|"CIRCULAR"|"NOTIFICATION"|"ORDER"|"LETTER"|"CORRIGENDUM"|"RULES"|"ACT"|"COURT_ORDER"|"OTHER"}

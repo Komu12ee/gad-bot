@@ -1,0 +1,98 @@
+[
+  {
+    "query_id": "HR001",
+    "query": "स्थानांतरण नीति 2026-27 के मुख्य प्रावधान और अनुसूचित क्षेत्रों में न्यूनतम सेवा अवधि",
+    "gold_passage_ids": "[\"63dfd3acb3182dc5_c001\", \"63dfd3acb3182dc5_c002\"]",
+    "query_language": "hi",
+    "doc_language": "hi",
+    "is_exact_match_query": false
+  },
+  {
+    "query_id": "HR002",
+    "query": "What is the maximum Child Care Leave (CCL) period permitted for women employees?",
+    "gold_passage_ids": "[\"bab670ac612f4f79_c001\"]",
+    "query_language": "en",
+    "doc_language": "hi",
+    "is_exact_match_query": false
+  },
+  {
+    "query_id": "HR003",
+    "query": "अधिसूचना क्रमांक RULE/297/2025-GAD-3 के तहत किए गए संशोधन",
+    "gold_passage_ids": "[\"ecc05b64348b4c77_c001\"]",
+    "query_language": "hi",
+    "doc_language": "hi",
+    "is_exact_match_query": true
+  },
+  {
+    "query_id": "HR004",
+    "query": "Dearness Allowance rates revision order effective 01.07.2025 in seventh pay commission",
+    "gold_passage_ids": "[\"efc290b78f6c8ad7_c001\", \"efc290b78f6c8ad7_c002\"]",
+    "query_language": "en",
+    "doc_language": "hi",
+    "is_exact_match_query": false
+  },
+  {
+    "query_id": "HR005",
+    "query": "vacancy circular No. A-12025/12/2010-Adm.I dated 2010-07-19 Planning Commission",
+    "gold_passage_ids": "[\"0007f1071c2918fc_c001\"]",
+    "query_language": "en",
+    "doc_language": "en",
+    "is_exact_match_query": true
+  },
+  {
+    "query_id": "HR006",
+    "query": "अनुकंपा नियुक्ति के लिए आश्रित परिवार के आवेदन प्रस्तुत करने की समय सीमा",
+    "gold_passage_ids": "[\"18ee1d1997164968_c001\"]",
+    "query_language": "hi",
+    "doc_language": "hi",
+    "is_exact_match_query": false
+  },
+  {
+    "query_id": "HR007",
+    "query": "CHiPS State Data Centre uptime SLA requirements and cloud hosting guarantees",
+    "gold_passage_ids": "[\"5f369c50ead865ab_c001\", \"5f369c50ead865ab_c002\"]",
+    "query_language": "en",
+    "doc_language": "en",
+    "is_exact_match_query": false
+  },
+  {
+    "query_id": "HR008",
+    "query": "deputation guidelines for state government employees to autonomous bodies",
+    "gold_passage_ids": "[\"678e98966a2c4c56_c001\"]",
+    "query_language": "en",
+    "doc_language": "hi",
+    "is_exact_match_query": false
+  },
+  {
+    "query_id": "HR009",
+    "query": "circular No. 1329 dated 23.09.2026 general circulars and notifications",
+    "gold_passage_ids": "[\"bab670ac612f4f79_c002\"]",
+    "query_language": "en",
+    "doc_language": "hi",
+    "is_exact_match_query": true
+  },
+  {
+    "query_id": "HR010",
+    "query": "दिव्यांग शासकीय सेवकों के लिए विशेष वाहन भत्ता पात्रता एवं दरें",
+    "gold_passage_ids": "[\"18ee1d1997164968_c003\"]",
+    "query_language": "hi",
+    "doc_language": "hi",
+    "is_exact_match_query": false
+  },
+  {
+    "query_id": "HR011",
+    "query": "who is Shri Anupam Ashish Toppo and what is his current designation?",
+    "gold_passage_ids": "[\"63dfd3acb3182dc5_c024\"]",
+    "query_language": "en",
+    "doc_language": "hi",
+    "is_exact_match_query": false
+  },
+  {
+    "query_id": "HR012",
+    "query": "विभागीय पदोन्नति समिति (DPC) की नियमित बैठक आयोजित करने के निर्देश",
+    "gold_passage_ids": "[\"45b4b2ca681a4c0d_c001\"]",
+    "query_language": "hi",
+    "doc_language": "hi",
+    "is_exact_match_query": false
+  }
+]

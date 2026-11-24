@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Department sign-in</title>
+  <link rel="icon" href="../../img/cg-emblem.png" />
+  <link rel="stylesheet" href="../../design-system.css" />
+  <link rel="stylesheet" href="../../platform-assets/platform.css" />
+</head>
+<body>
+  <div class="login-wrap">
+    <form class="login-card" id="form" autocomplete="on">
+      <div class="brand-row">
+        <img src="../../img/cg-emblem.png" alt="" />
+        <div>
+          <h1 id="dept-name">Department</h1>
+          <div class="sub">Department panel · sign in</div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocomplete="username" spellcheck="false" autocapitalize="none" required />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required />
+      </div>
+      <div class="msg-box err hidden" id="msg"></div>
+      <button class="primary" id="submit" type="submit">Sign in</button>
+      <div class="hint">New here? <a class="auth-link" href="signup">Create an account</a></div>
+    </form>
+  </div>
+  <script src="../../platform-assets/platform.js"></script>
+  <script src="../../platform-assets/dept-login.js"></script>
+</body>
+</html>

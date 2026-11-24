@@ -1,0 +1,49 @@
+topics:
+  - id: transfer_posting
+    name_en: Transfer and Posting
+    name_hi: स्थानांतरण एवं पदस्थापना
+  - id: promotion_seniority
+    name_en: Promotion and Seniority
+    name_hi: पदोन्नति एवं वरिष्ठता
+  - id: leave_rules
+    name_en: Leave Rules
+    name_hi: अवकाश नियम
+  - id: pension_gratuity
+    name_en: Pension and Gratuity
+    name_hi: पेंशन एवं उपादान
+  - id: pay_allowances
+    name_en: Pay Scales and Allowances
+    name_hi: वेतनमान एवं भत्ते
+  - id: reservation_roster
+    name_en: Reservation and Roster
+    name_hi: आरक्षण एवं रोस्टर
+  - id: disciplinary_vigilance
+    name_en: Disciplinary Action and Vigilance
+    name_hi: अनुशासनात्मक कार्रवाई एवं सतर्कता
+  - id: recruitment_rules
+    name_en: Recruitment and Service Rules
+    name_hi: भर्ती तथा सेवा नियम
+  - id: compassionate_appointment
+    name_en: Compassionate Appointment
+    name_hi: अनुकंपा नियुक्ति
+  - id: holidays_calendar
+    name_en: Public Holidays and Calendar
+    name_hi: सार्वजनिक अवकाश एवं कैलेंडर
+  - id: conduct_rules
+    name_en: Civil Service Conduct Rules
+    name_hi: सिविल सेवा आचरण नियम
+  - id: deputation
+    name_en: Deputation Guidelines
+    name_hi: प्रतिनियुक्ति दिशा-निर्देश
+  - id: probation_confirmation
+    name_en: Probation and Confirmation
+    name_hi: परिवीक्षा अवधि एवं संपुष्टि
+  - id: office_procedure
+    name_en: Secretariat Office Procedure
+    name_hi: मंत्रालय कार्यालय कार्यप्रणाली
+  - id: freedom_fighters_misa
+    name_en: Freedom Fighters and Lok Sevak (MISA)
+    name_hi: स्वतंत्रता संग्राम सेनानी एवं लोकतंत्र सेनानी (मीसाबंदी)
+  - id: general_governance
+    name_en: General Administration and Circulars
+    name_hi: सामान्य प्रशासन एवं परिपत्र

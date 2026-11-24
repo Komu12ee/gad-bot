@@ -1,0 +1,13 @@
+TASK: Does this sentence say from or until when a rule applies?
+Choose "kind":
+"EFFECTIVE_FROM"  = the rule starts on a date ("with effect from", "दिनांक … पासून लागू", "from the date of issue")
+"EFFECTIVE_TO"    = the rule ends / is valid till a date ("valid up to", "पर्यंत")
+"NONE"            = anything else
+"retrospective" = true only if the sentence says the rule applies from a date BEFORE this document was issued
+("retrospectively", "पूर्वलक्षी प्रभावाने", "पूर्व प्रभाव से").
+If the sentence says "from the date of this order/issue", set date_raw to "ISSUE_DATE".
+
+SENTENCE: {{sentence}}
+
+OUTPUT SCHEMA: {"quote": string, "kind": "EFFECTIVE_FROM"|"EFFECTIVE_TO"|"NONE",
+ "date_raw": string|null, "retrospective": boolean}

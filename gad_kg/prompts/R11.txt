@@ -1,0 +1,11 @@
+TASK: Check a claim against a sentence. Be strict.
+CLAIM: In the document "{{this_doc_label}}", the sentence below shows that THIS document {{relation_in_words}}
+the other document ({{target_description}}), with scope: {{scope}}.
+
+SENTENCE: {{quote}}
+CONTEXT: {{prev_sentence}} {{next_sentence}}
+
+Answer "SUPPORTED" only if the sentence clearly states exactly this. Answer "NOT_SUPPORTED" if the sentence says
+something different (wrong direction, wrong relation, wrong scope). Answer "UNCLEAR" if you cannot tell.
+
+OUTPUT SCHEMA: {"reason": string (max 20 words), "verdict": "SUPPORTED"|"NOT_SUPPORTED"|"UNCLEAR"}

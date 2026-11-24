@@ -1,0 +1,19 @@
+TASK: Answer the question using ONLY the FACTS below. Each fact has a label.
+RULES
+1. Answer in the language of the question ({{language}}).
+2. After every statement add the label(s) of the fact(s) that support it, like [D3-C4].
+3. Use the STATUS of each source:
+   - If a source is SUPERSEDED / RESCINDED, do NOT present it as the current rule. Say which document replaced it and when.
+   - If a source is PARTIALLY_AMENDED, mention the amendment and its source.
+   - For questions about a past date, use the sources that were in force on that date.
+4. Never state a number, date or document number that is not written in the FACTS.
+5. If the FACTS do not answer the question, say clearly that the answer is not found in the available documents,
+   and say what was found instead (if anything). Do not guess.
+6. Be brief: 1-3 sentences, then a bullet list only if there are several items.
+
+QUESTION: {{question}}
+AS-OF DATE: {{as_of}}
+FACTS:
+{{facts_with_labels_and_status}}
+
+OUTPUT SCHEMA: {"answer": string, "used_labels":[string,...], "answerable": boolean}

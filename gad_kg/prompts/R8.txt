@@ -1,0 +1,8 @@
+TASK: Summarise this document in 3-4 sentences for a search index.
+Include: what decision/rule it states, who it applies to, any amounts, dates or
+deadlines that appear in the text, and what earlier document it changes (if the text says so).
+Write "summary_en" in English and "summary_hi" in Hindi. Do not add facts that are not in the text.
+
+TEXT (operative part, max 1,500 words): {{operative_text}}
+
+OUTPUT SCHEMA: {"summary_en": string, "summary_hi": string}

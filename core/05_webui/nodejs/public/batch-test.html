@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>window.__APP_BASE__=(location.pathname.match(/^\/pipeline\/[^/]+/)||[''])[0];</script>
+  <title>Batch test</title>
+  <meta name="page-name" content="Batch test" />
+  <link rel="icon" href="img/cg-emblem.png" data-brand-favicon />
+  <link rel="stylesheet" href="design-system.css" />
+  <style>
+    /* Tokens & base come from the shared design system (design-system.css). */
+    * { box-sizing:border-box; margin:0; }
+    body { font-family:var(--font); background:var(--canvas); color:var(--text); min-height:100vh; font-size:14px; -webkit-font-smoothing:antialiased; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+             padding:11px 20px; background:var(--bg); border-bottom:1px solid var(--border); }
+    .brand { display:flex; align-items:center; gap:9px; text-decoration:none; color:inherit; }
+    .brand img { width:30px; height:30px; object-fit:contain; }
+    .brand b { font-weight:600; font-size:15px; }
+    .brand span { font-size:12px; color:var(--text-3); }
+    header nav a { color:var(--navy); text-decoration:none; font-weight:500; font-size:13px; }
+    header nav a:hover { text-decoration:underline; }
+    .wrap { max-width:1000px; margin:26px auto; padding:0 20px; display:flex; flex-direction:column; gap:22px; }
+    .panel { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .panel h2 { font-size:14px; font-weight:600; padding:14px 18px; border-bottom:1px solid var(--border);
+                display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .body { padding:18px; display:flex; flex-direction:column; gap:14px; }
+    .row { display:grid; grid-template-columns:2fr 1fr; gap:12px; }
+    .field label { display:block; font-size:11.5px; color:var(--text-2); margin-bottom:5px; font-weight:500; }
+    .field input, .field select, .field textarea { width:100%; padding:9px 11px; border:1px solid var(--border); border-radius:var(--radius);
+             background:var(--bg); color:var(--text); font-size:13.5px; font-family:var(--font); outline:none; }
+    .field textarea { min-height:190px; resize:vertical; line-height:1.55; }
+    .field textarea::placeholder, .field input::placeholder { color:var(--text-3); opacity:.7; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--navy); box-shadow:0 0 0 3px var(--navy-tint); }
+    .actions { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .hint { font-size:12.5px; color:var(--text-3); line-height:1.5; }
+    button.primary { padding:11px 18px; border:0; border-radius:var(--radius);
+             background:linear-gradient(180deg, var(--blue-2) 0%, var(--blue) 100%); color:#fff;
+             font-weight:600; font-size:13.5px; cursor:pointer;
+             box-shadow:0 1px 2px rgba(23,58,94,.24), 0 5px 12px -6px rgba(61,120,180,.5); }
+    button.primary:hover { filter:brightness(1.07); }
+    button.primary:disabled { opacity:.6; cursor:default; }
+    button.mini, a.mini { display:inline-block; padding:5px 10px; border:1px solid var(--border); background:var(--bg); color:var(--text-2);
+             border-radius:var(--radius); font-size:12.5px; cursor:pointer; text-decoration:none; white-space:nowrap; font-family:var(--font); }
+    button.mini:hover, a.mini:hover { border-color:var(--navy-border); color:var(--navy); }
+    button.mini.danger { color:var(--red); }
+    button.mini.danger:hover { border-color:var(--red-border); background:var(--red-bg); }
+    button.mini.on { border-color:var(--navy-border); color:var(--navy); background:var(--navy-tint); }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { text-align:left; padding:10px 14px; border-bottom:1px solid var(--border); font-size:13px; vertical-align:middle; }
+    th { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3); font-weight:600; }
+    tr:last-child td { border-bottom:0; }
+    tr.sel td { background:var(--navy-tint); }
+    .row-actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .chip { display:inline-block; font-size:11px; font-weight:600; padding:2px 9px; border-radius:3px; white-space:nowrap; }
+    .chip.done { background:var(--green-bg); color:var(--green); }
+    .chip.running, .chip.queued { background:var(--navy-tint); color:var(--navy); }
+    .chip.stopped, .chip.pending { background:var(--raised); color:var(--text-2); }
+    .chip.error { background:var(--red-bg); color:var(--red); }
+    .note { padding:12px 18px; font-size:12.5px; color:var(--text-3); }
+    .bar { height:6px; background:var(--raised); border-radius:3px; overflow:hidden; min-width:90px; }
+    .bar i { display:block; height:100%; background:var(--blue); transition:width .3s; }
+    .bar i.err { background:var(--red); }
+    .meta { display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px; color:var(--text-2); }
+    .reason { font-size:12.5px; color:var(--red); }
+    .items { display:flex; flex-direction:column; }
+    .item { padding:14px 18px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:8px; }
+    .item .q { display:flex; gap:10px; align-items:baseline; }
+    .item .q b { font-weight:600; line-height:1.5; flex:1; }
+    .item .n { color:var(--text-3); font-size:12px; min-width:26px; }
+    .item .secs { color:var(--text-3); font-size:12px; white-space:nowrap; }
+    .answer { white-space:pre-wrap; line-height:1.6; font-size:13.5px; padding-left:36px; }
+    .expected { padding-left:36px; font-size:13px; color:var(--text-2); }
+    .expected span, .label { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3); font-weight:600; }
+    .sources { padding-left:36px; font-size:12.5px; display:flex; flex-direction:column; gap:3px; }
+    .sources a { color:var(--navy); }
+    details.retrieved { padding-left:36px; font-size:12.5px; color:var(--text-2); }
+    details.retrieved summary { cursor:pointer; color:var(--text-3); }
+    details.retrieved ol { margin:6px 0 0 18px; padding:0; line-height:1.6; }
+    .err-text { padding-left:36px; color:var(--red); font-size:13px; }
+    #toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
+             background:var(--bg); border:1px solid var(--border); padding:11px 18px; border-radius:var(--radius);
+             font-size:13px; box-shadow:var(--shadow); opacity:0; transition:opacity .2s; pointer-events:none; z-index:10; }
+    #toast.show { opacity:1; }
+    .hidden { display:none !important; }
+    @media (max-width:640px){
+      .row { grid-template-columns:1fr; }
+      .wrap { padding:0 12px; }
+      .answer, .expected, .sources, details.retrieved, .err-text { padding-left:0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="./" title="Go to home" aria-label="Home">
+      <img src="img/cg-emblem.png" alt="" data-brand-logo />
+      <b data-brand-name>GAD</b><span>Batch test</span>
+    </a>
+    <nav><a href="./">← Chat</a> &nbsp;·&nbsp; <a href="evaluation.html">Component evaluation</a> &nbsp;·&nbsp; <a href="documents.html">Documents</a> &nbsp;·&nbsp; <a href="gad-admin.html">Accounts</a> &nbsp;·&nbsp; <a href="gpu.html">GPU Capacity</a></nav>
+  </header>
+
+  <div class="wrap">
+    <div class="panel">
+      <h2>New test run</h2>
+      <div class="body">
+        <div class="row">
+          <div class="field">
+            <label for="run-name">Name <span style="color:var(--text-3)">(optional)</span></label>
+            <input id="run-name" type="text" maxlength="120" placeholder="e.g. Leave rules, after the metadata fix" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="run-mode">Mode</label>
+            <select id="run-mode">
+              <option value="normal">Normal — as the chat answers</option>
+              <option value="thinking">Thinking — slower, several searches</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="questions">Questions — one per line</label>
+          <textarea id="questions" spellcheck="false"
+            placeholder="For example:&#10;अर्जित अवकाश कितने दिन का मिलता है?&#10;स्थानांतरण नीति 2025 में क्या सीमा तय की गई है?&#10;What is the maximum age for compassionate appointment?"></textarea>
+        </div>
+        <div class="actions">
+          <div class="hint">
+            <span id="q-count">0 questions</span><br />
+            Or load a file: <b>.txt</b> (one question per line) or <b>.csv</b> (question in the first column,
+            an expected answer in the second if you have one — it is put next to the bot's answer in the download).
+          </div>
+          <div class="row-actions">
+            <input id="file" type="file" accept=".txt,.csv,text/plain,text/csv" class="hidden" />
+            <button class="mini" id="load-file" type="button">Load file…</button>
+            <button class="primary" id="start" type="button">Start test run</button>
+          </div>
+        </div>
+        <div class="hint">Each question is asked on its own (no chat history), one after another, about 20 seconds each.
+          The run keeps going if you close this page. Others using the bot meanwhile get answers a little slower.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Test runs <button class="mini" id="refresh" type="button">Refresh</button></h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Started</th><th>Mode</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="run-rows"><tr><td colspan="6" class="note">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel hidden" id="detail">
+      <h2>
+        <span id="d-title">Run</span>
+        <span class="row-actions">
+          <button class="mini on" data-filter="all" type="button">All</button>
+          <button class="mini" data-filter="error" type="button">Failed</button>
+          <a class="mini" id="d-csv" href="#">Download CSV</a>
+          <a class="mini" id="d-json" href="#">Download JSON</a>
+        </span>
+      </h2>
+      <div class="body" style="padding-bottom:10px">
+        <div class="meta" id="d-meta"></div>
+        <div class="bar"><i id="d-bar" style="width:0"></i></div>
+        <div class="reason hidden" id="d-reason"></div>
+      </div>
+      <div class="items" id="d-items"></div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <script src="branding.js"></script>
+  <script src="batch-test.js"></script>
+</body>
+</html>

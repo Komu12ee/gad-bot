@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>window.__APP_BASE__=(location.pathname.match(/^\/pipeline\/[^/]+/)||[''])[0];</script>
+  <title>Documents</title>
+  <meta name="page-name" content="Documents" />
+  <link rel="icon" href="img/cg-emblem.png" data-brand-favicon />
+  <link rel="stylesheet" href="design-system.css" />
+  <style>
+    /* ══════════════════════════════════════════════════════════════════════
+       Document explorer — layout contract:
+       · Every control lives on one of three heights: 38px (primary), 32px
+         (standard), 26px (micro). Nothing floats between sizes.
+       · Left edges align to a 20px gutter in the detail area and a 16px
+         gutter in the sidebar. Pane content and pane labels share an edge.
+       · Each fact appears once: identity in the bar's top row, provenance in
+         its meta row, panes carry only their own labels.
+       ══════════════════════════════════════════════════════════════════════ */
+    body { height:100vh; display:flex; flex-direction:column; overflow:hidden;
+           font-size:14px; background:var(--canvas); color:var(--text-1); }
+
+    /* ── Header ─────────────────────────────────────────────────────────── */
+    header { height:56px; display:flex; align-items:center; justify-content:space-between;
+             gap:16px; padding:0 20px; background:var(--surface); border-bottom:1px solid var(--border); flex:none; }
+    .hleft { display:flex; align-items:center; gap:12px; min-width:0; }
+    .icon-btn { display:flex; align-items:center; justify-content:center; width:32px; height:32px; flex:none;
+                border:1px solid var(--border); background:var(--surface); border-radius:var(--radius-sm);
+                color:var(--text-2); cursor:pointer;
+                transition:border-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out), background var(--dur-2) var(--ease-out); }
+    .icon-btn:hover { border-color:var(--accent-border); color:var(--accent-ink); background:var(--accent-tint); }
+    .brand { display:flex; align-items:center; gap:10px; min-width:0; }
+    .brand .gov-logo { width:28px; height:28px; flex:0 0 28px; object-fit:contain; }
+    .brand b { font-size:14.5px; font-weight:var(--weight-semibold); white-space:nowrap; }
+    .brand .crumb-sep { color:var(--n-300); font-size:13px; }
+    .brand .crumb { font-size:13.5px; color:var(--text-3); white-space:nowrap; }
+    .top-right { display:flex; align-items:center; gap:16px; flex:none; }
+    .chat-link { font-size:13px; font-weight:var(--weight-medium); white-space:nowrap; }
+
+    main { flex:1; display:flex; min-height:0; }
+
+    /* ── Sidebar ────────────────────────────────────────────────────────── */
+    .sidebar { width:320px; flex:none; border-right:1px solid var(--border); display:flex; flex-direction:column;
+               background:var(--surface); overflow:hidden; transition:width var(--dur-3) var(--ease-out); }
+    body.list-collapsed .sidebar { width:0; border-right:0; }
+
+    .list-tools { padding:14px 16px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:14px; }
+    .search-wrap { position:relative; display:flex; align-items:center; }
+    .search-wrap svg { position:absolute; left:11px; width:15px; height:15px; color:var(--text-3); pointer-events:none; }
+    #doc-search { width:100%; height:34px; padding:0 11px 0 33px; border:1px solid var(--border); border-radius:var(--radius-sm);
+                  background:var(--surface); color:var(--text-1); font-size:13px; outline:none;
+                  transition:border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out); }
+    #doc-search:hover { border-color:var(--border-strong); }
+    #doc-search:focus { border-color:var(--primary); box-shadow:var(--focus-ring); }
+
+    /* Filters: each a labelled dropdown whose options carry their counts, so the
+       list's make-up reads at a glance. All filters combine (AND). */
+    .filters { display:grid; grid-template-columns:auto 1fr; gap:7px 10px; align-items:center; }
+    .tool-label { font-size:10.5px; font-weight:var(--weight-semibold); letter-spacing:var(--tracking-caps);
+                  text-transform:uppercase; color:var(--text-3); white-space:nowrap; }
+    .filters select { width:100%; min-width:0; height:30px; padding:0 8px; border:1px solid var(--border);
+                      border-radius:var(--radius-sm); background:var(--surface); color:var(--text-1);
+                      font-size:12.5px; font-family:inherit; outline:none; cursor:pointer;
+                      transition:border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out); }
+    .filters select:hover { border-color:var(--border-strong); }
+    .filters select:focus { border-color:var(--primary); box-shadow:var(--focus-ring); }
+    .filters select.set { border-color:var(--accent-border); background:var(--accent-tint); color:var(--accent-ink); }
+    .count-line { display:flex; align-items:center; justify-content:space-between; gap:8px;
+                  font-size:11.5px; color:var(--text-2); font-variant-numeric:tabular-nums; min-height:22px; }
+    .link-btn { border:0; background:none; padding:0; font-size:11.5px; font-family:inherit;
+                color:var(--accent-ink); cursor:pointer; white-space:nowrap; }
+    .link-btn:hover { text-decoration:underline; }
+    .link-btn[hidden] { display:none; }
+    .more-btn { display:block; width:100%; margin:8px 0 4px; height:30px; border:1px dashed var(--border);
+                border-radius:var(--radius-sm); background:var(--surface); color:var(--text-2);
+                font-size:12px; font-family:inherit; cursor:pointer; }
+    .more-btn:hover { border-color:var(--accent-border); color:var(--accent-ink); }
+
+    .list { overflow-y:auto; flex:1; padding:6px 8px 10px; }
+    .list-empty { padding:24px 16px; text-align:center; color:var(--text-3); font-size:12.5px; line-height:1.5; }
+    .group-label { font-size:10.5px; font-weight:var(--weight-semibold); text-transform:uppercase;
+                   letter-spacing:var(--tracking-caps); color:var(--text-3); padding:14px 12px 6px; }
+    .doc { padding:10px 12px; border-radius:var(--radius-sm); cursor:pointer; border:1px solid transparent; margin-bottom:2px; }
+    .doc:hover { background:var(--surface-sunken); }
+    .doc.active { background:var(--accent-tint); border-color:var(--accent-border); }
+    .doc .name { font-size:13px; font-weight:var(--weight-medium); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .doc .meta { font-size:11.5px; color:var(--text-3); margin-top:3px; }
+    .doc .meta.url { color:var(--accent-ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .badge { display:inline-block; font-size:10.5px; font-weight:var(--weight-semibold); padding:2px 8px;
+             border-radius:4px; margin-top:6px; }
+    .badge.processing { background:var(--surface-sunken); color:var(--text-2); margin-right:5px; }
+    .badge.error      { background:var(--red-bg); color:var(--red-500); margin-right:5px; }
+    .badge.method     { font-weight:var(--weight-medium); border:1px solid transparent; }
+    .badge.m-sarvam   { background:var(--accent-tint); color:var(--accent-ink); border-color:var(--accent-border); }
+    .badge.m-ocr      { background:var(--surface-sunken); color:var(--text-2); }
+    .badge.m-extract  { background:transparent; color:var(--text-3); border-color:var(--border); }
+    .sec-badge        { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:var(--weight-semibold);
+                        padding:1px 5px; background:var(--surface-sunken); border:1px solid var(--border);
+                        border-radius:3px; margin-right:5px; color:var(--text-2); white-space:nowrap; vertical-align:middle; }
+
+    .kbd-foot { flex:none; display:flex; align-items:center; gap:5px; padding:9px 16px;
+                border-top:1px solid var(--border); background:var(--surface);
+                font-size:11px; color:var(--text-3); }
+    .kbd-foot kbd { font-family:var(--font-mono); font-size:10px; background:var(--surface-sunken);
+                    border:1px solid var(--border); border-radius:4px; padding:1px 5px; color:var(--text-2); line-height:1.5; }
+    .kbd-foot .sep { width:12px; }
+
+    /* ── Detail: identity bar ───────────────────────────────────────────────
+       Row 1 — what it is (title, and a chip only for an error / still being read).
+       Row 2 — where it came from (source · how the text was read · index · folder).
+       One fact, one place, two calm lines. */
+    .detail { flex:1; display:flex; flex-direction:column; min-width:0; }
+    .placeholder { flex:1; display:flex; align-items:center; justify-content:center; color:var(--text-3); font-size:13.5px; }
+
+    .detail-bar { display:flex; flex-direction:column; gap:8px; padding:14px 20px 12px;
+                  border-bottom:1px solid var(--border); background:var(--surface); flex:none; }
+    .bar-top { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:32px; }
+    .title-group { display:flex; align-items:center; gap:10px; min-width:0; }
+    .title-group .title { font-size:15px; font-weight:var(--weight-semibold); letter-spacing:var(--tracking-tight);
+                          overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .status-chip { display:inline-flex; align-items:center; height:22px; padding:0 9px; flex:none;
+                   border-radius:var(--radius-full); font-size:11px; font-weight:var(--weight-semibold);
+                   border:1px solid transparent; white-space:nowrap; }
+    .status-chip.processing { background:var(--surface-sunken); color:var(--text-2); }
+    .status-chip.error      { background:var(--red-bg); color:var(--red-500); border-color:var(--red-border); }
+
+
+    /* One line, always: the URL ellipsizes; everything else keeps its width. */
+    .bar-meta { display:flex; align-items:center; gap:8px; height:26px;
+                font-size:12px; color:var(--text-2); }
+    .bar-meta .meta-src { min-width:60px; flex:0 1 auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+                          color:var(--accent-ink); }
+    .bar-meta .meta-note { white-space:nowrap; flex:none; color:var(--text-2); }
+    .bar-meta .meta-id { font-family:var(--font-mono); font-size:11.5px; color:var(--text-3); cursor:copy; flex:none; }
+    .bar-meta .meta-sep { color:var(--n-300); flex:none; }
+    .bar-meta .bar-spacer { flex:1; min-width:16px; }
+
+    /* ── Detail: panes ──────────────────────────────────────────────────────
+       Labels share a 38px minimum height and wrap their tools on narrow panes.
+       Content shares the 20px gutter. */
+    .panes { flex:1; display:flex; min-height:0; }
+    .pane { flex:1; min-width:0; display:flex; flex-direction:column; }
+    .pane.pdf { border-right:1px solid var(--border); }
+    .pane-label { min-height:38px; flex:none; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 12px;
+                  padding:7px 20px; background:var(--surface); border-bottom:1px solid var(--border);
+                  font-size:11px; font-weight:var(--weight-semibold); text-transform:uppercase;
+                  letter-spacing:var(--tracking-caps); color:var(--text-3); }
+    .pane-label .pane-link { font-size:11.5px; font-weight:var(--weight-medium); color:var(--accent-ink);
+                             text-transform:none; letter-spacing:0; white-space:nowrap; }
+    .pane.pdf iframe { flex:1; border:0; width:100%; background:#f0f2f5; }
+    .pane.md textarea { flex:1; width:100%; resize:none; border:0; padding:18px 20px;
+                        background:var(--surface); color:var(--text-1); font-family:var(--font-mono);
+                        font-size:13px; line-height:1.7; outline:none; }
+    .no-raw { padding:22px 20px; color:var(--text-2); font-size:13px; line-height:1.6; background:var(--surface); flex:1; }
+    .no-raw a { color:var(--accent-ink); }
+    .err-box { margin:20px; padding:13px 15px; background:var(--red-bg); border:1px solid var(--red-border);
+               border-radius:var(--radius-sm); color:var(--red-500); font-size:13px; white-space:pre-wrap; }
+
+    /* ── Word review ────────────────────────────────────────────────────── */
+    .check-words { height:24px; display:inline-flex; align-items:center; padding:0 10px;
+                   font-size:11px; font-weight:var(--weight-semibold); border-radius:var(--radius-full); cursor:pointer;
+                   border:1px solid var(--accent-border); background:var(--accent-tint); color:var(--accent-ink);
+                   font-family:inherit; text-transform:none; letter-spacing:0; white-space:nowrap; }
+    .check-words:hover:not(:disabled) { background:var(--accent-tint-2); }
+    .check-words:disabled { opacity:.6; cursor:default; }
+    .pane-tools { display:flex; gap:6px; flex-wrap:wrap; }
+    .text-pane-label .pane-tools { flex:1; }
+    .text-fullscreen { margin-left:auto; flex:none; width:24px; height:24px; }
+    .text-fullscreen .collapse-icon { display:none; }
+    .pane.md.is-fullscreen { position:fixed; inset:0; z-index:1000; width:100%; height:100%;
+                            background:var(--surface); }
+    .pane.md.is-fullscreen .expand-icon { display:none; }
+    .pane.md.is-fullscreen .collapse-icon { display:block; }
+    .text-fullscreen:focus-visible { outline:2px solid var(--accent-ink); outline-offset:2px; }
+    .check-words[aria-pressed="true"] { background:var(--accent-ink); color:var(--surface); }
+    .check-words:focus-visible { outline:2px solid var(--accent-ink); outline-offset:2px; }
+
+    /* Formatted Markdown uses the document's headings, lists and table structure. */
+    .md-reader { flex:1; min-height:0; overflow:auto; padding:20px;
+                 background:var(--surface); color:var(--text-1); font-family:inherit;
+                 font-size:14px; line-height:1.8; overflow-wrap:anywhere; }
+    .md-reader > :first-child { margin-top:0; }
+    .md-reader p, .md-reader ul, .md-reader ol, .md-reader pre,
+    .md-reader blockquote, .md-reader table { margin:0 0 16px; }
+    .md-reader h1, .md-reader h2, .md-reader h3, .md-reader h4,
+    .md-reader h5, .md-reader h6 { margin:24px 0 12px; line-height:1.5; font-weight:var(--weight-semibold); }
+    .md-reader h1 { font-size:24px; }
+    .md-reader h2 { font-size:21px; }
+    .md-reader h3 { font-size:18px; }
+    .md-reader h4, .md-reader h5, .md-reader h6 { font-size:15px; }
+    .md-reader ul, .md-reader ol { padding-left:26px; }
+    .md-reader li > p { margin-bottom:6px; }
+    .md-reader li > ul, .md-reader li > ol { margin-bottom:0; }
+    .md-reader blockquote { border-left:3px solid var(--accent-border); padding:0 16px; color:var(--text-2); }
+    .md-reader table { border-collapse:collapse; min-width:100%; font-size:13px; }
+    .md-reader th, .md-reader td { border:1px solid var(--border); padding:8px 12px; text-align:left; vertical-align:top; }
+    .md-reader th { background:var(--surface-sunken); font-weight:var(--weight-semibold); }
+    .md-reader code { font-family:var(--font-mono); font-size:.9em; background:var(--surface-sunken); padding:2px 4px; border-radius:3px; }
+    .md-reader pre { padding:12px; background:var(--surface-sunken); overflow:auto; white-space:pre; }
+    .md-reader pre code { padding:0; }
+    .md-reader hr { border:0; border-top:1px solid var(--border); margin:24px 0; }
+    .md-reader a { color:var(--accent-ink); text-decoration:underline; }
+
+    /* Read-only overlay mirroring the textarea, with suspect words marked. */
+    .md-review { flex:1; overflow:auto; white-space:pre-wrap; word-break:break-word;
+                 padding:18px 20px; background:var(--surface);
+                 font-family:var(--font-mono); font-size:13px; line-height:1.7; color:var(--text-1); }
+    .md-review.hidden, .md-reader.hidden, #md-text.hidden { display:none !important; }
+    .md-review .empty { color:var(--text-3); }
+
+    /* Severity by cause: certain damage reads red, dictionary misses amber. */
+    mark.sus { border-radius:3px; padding:0 2px; cursor:pointer; background:var(--amber-bg); color:inherit;
+               border-bottom:2px solid var(--amber-600); }
+    mark.sus.broken_encoding,
+    mark.sus.orphan_matra { background:var(--red-bg); border-bottom-color:var(--red-500); }
+    mark.sus.nofix { border-bottom-style:dotted; }   /* nothing to suggest */
+    mark.sus:hover { filter:brightness(.96); }
+
+    .sus-pop { position:absolute; z-index:60; min-width:220px; max-width:300px;
+               background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);
+               box-shadow:var(--shadow-3); padding:9px; font-size:12px; }
+    .sus-why { color:var(--text-3); font-size:11px; margin-bottom:7px; line-height:1.4; }
+    .sus-list { display:flex; flex-direction:column; gap:3px; }
+    .sus-opt { display:flex; align-items:baseline; justify-content:space-between; gap:8px; width:100%;
+               padding:6px 8px; border-radius:var(--radius-xs);
+               background:var(--surface-sunken); font-size:12.5px; color:var(--text-1); }
+    .sus-opt .t { font-weight:var(--weight-semibold); }
+    .sus-opt .d { font-size:10px; color:var(--text-3); white-space:nowrap; }
+    .sus-none { color:var(--text-3); font-size:11.5px; line-height:1.45; }
+
+    #toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:var(--z-toast);
+             background:var(--surface); border:1px solid var(--border); padding:11px 18px; border-radius:var(--radius-sm);
+             font-size:13px; box-shadow:var(--shadow-3); opacity:0; transition:opacity var(--dur-2); pointer-events:none; }
+    #toast.show { opacity:1; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hleft">
+      <button id="toggle-list" class="icon-btn" title="Show / hide document list" aria-label="Toggle document list">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1"/><line x1="9" y1="4" x2="9" y2="20"/></svg>
+      </button>
+      <a class="brand" href="./" title="Go to home" aria-label="Home">
+        <img class="gov-logo" src="img/cg-emblem.png" alt="Government of Chhattisgarh" data-brand-logo />
+        <b data-brand-name>Document Assistant</b>
+        <span class="crumb-sep">/</span>
+        <span class="crumb">Documents</span>
+      </a>
+    </div>
+    <div class="top-right">
+      <a class="chat-link" href="graph.html">Temporal Graph</a>
+      <a class="chat-link" href="gpu.html">GPU Capacity</a>
+      <a class="chat-link" href="batch-test.html">Batch test</a>
+      <a class="chat-link" href="./">← Back to chat</a>
+    </div>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <!-- Explorer tools: search + filters (all combine) + how many are shown -->
+      <div class="list-tools">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="doc-search" type="search" placeholder="Search name, URL or folder id…" autocomplete="off" spellcheck="false" aria-label="Search documents" />
+        </div>
+        <div class="filters">
+          <label class="tool-label" for="f-section">Section</label>
+          <select id="f-section" data-filter="section" title="Website Section / Category folder"></select>
+          <label class="tool-label" for="f-kind">Type</label>
+          <select id="f-kind" data-filter="kind"></select>
+          <label class="tool-label" for="f-text">Text from</label>
+          <select id="f-text" data-filter="text" title="How the document's text was read"></select>
+          <label class="tool-label" for="f-index">In bot</label>
+          <select id="f-index" data-filter="index" title="Whether the chatbot searches this document"></select>
+          <label class="tool-label" for="f-state">State</label>
+          <select id="f-state" data-filter="state"></select>
+          <label class="tool-label" for="f-sort">Sort</label>
+          <select id="f-sort" data-filter="sort">
+            <option value="new">Newest added first</option>
+            <option value="old">Oldest added first</option>
+            <option value="name">Name A–Z</option>
+            <option value="passages">Most passages</option>
+          </select>
+        </div>
+        <div class="count-line">
+          <span id="count-text"></span>
+          <button class="link-btn" id="clear-filters" type="button" hidden>Clear filters</button>
+        </div>
+      </div>
+
+      <div class="list" id="list"></div>
+
+      <div class="kbd-foot">
+        <kbd>↑</kbd><kbd>↓</kbd> move through the list
+      </div>
+    </aside>
+
+    <section class="detail" id="detail">
+      <div class="placeholder">Select a document to view.</div>
+    </section>
+  </main>
+
+  <div id="toast"></div>
+  <script src="branding.js"></script>
+  <script src="vendor/marked-18.1.0.js"></script>
+  <script src="vendor/purify-3.4.16.min.js"></script>
+  <script src="documents.js?v=markdown-fullscreen-1"></script>
+</body>
+</html>

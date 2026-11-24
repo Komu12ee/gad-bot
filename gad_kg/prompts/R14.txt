@@ -1,0 +1,32 @@
+TASK: Analyse a user's question about government documents. Today's date is {{today}}.
+Fill every field.
+
+FIELDS
+"language"      : "hi" | "en" | "mixed"   (language of the QUESTION)
+"intent"        : one of
+   "LOOKUP"        a fact from a document (amount, eligibility, procedure, date)
+   "CURRENT_RULE"  what is the rule now / what applies today
+   "AS_OF_RULE"    what was the rule on a past date or period
+   "HISTORY"       how a rule changed over time / which documents amended it
+   "STATUS"        is this document still valid / was it superseded
+   "DOC_LOOKUP"    questions naming a document number or asking for its content
+   "LIST"          list or count documents matching a filter
+   "TABLE_QUERY"   needs numbers from a table (counts, rates, totals)
+   "COMPARE"       compare two rules or two time points
+   "OTHER"
+"as_of_date"    : "YYYY-MM-DD" if the question states or implies a date/year, else null
+"doc_refs"      : list of document numbers or dates the user mentions, exactly as written
+"filters"       : {"doc_type":string|null,"year_from":int|null,"year_to":int|null,"topic_hint":string|null}
+"queries_en"    : 2 short English search queries
+"queries_hi"    : 2 short Hindi search queries
+"needs_table"   : true/false
+
+EXAMPLE
+QUESTION: "2019 में अवर सचिव का वेतनमान क्या था?"
+OUTPUT: {"language":"hi","intent":"AS_OF_RULE","as_of_date":"2019-12-31","doc_refs":[],
+ "filters":{"doc_type":null,"year_from":null,"year_to":null,"topic_hint":"pay scale"},
+ "queries_en":["pay scale Under Secretary 2019","Under Secretary pay scale"],
+ "queries_hi":["अवर सचिव वेतनमान","अवर सचिव वेतन श्रेणी 2019"],"needs_table":true}
+
+QUESTION: {{question}}
+OUTPUT SCHEMA: (as above)

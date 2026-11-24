@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>window.__APP_BASE__=(location.pathname.match(/^\/pipeline\/[^/]+/)||[''])[0];</script>
+  <title>Departments</title>
+  <meta name="page-name" content="Departments" />
+  <link rel="icon" href="img/cg-emblem.png" data-brand-favicon />
+  <link rel="stylesheet" href="design-system.css" />
+  <link rel="stylesheet" href="platform-assets/platform.css" />
+  <link rel="stylesheet" href="departments.css?v=sections-1" />
+</head>
+<body class="departments-page">
+  <a class="department-skip" href="#workspace">Skip to department content</a>
+  <header class="department-header">
+    <a class="brand" href="./" title="Go to home" aria-label="Home">
+      <img src="img/cg-emblem.png" alt="" data-brand-logo />
+      <b data-brand-name>CHiPS</b><span>Departments</span>
+    </a>
+    <nav aria-label="Application"><a href="./">← Chat</a><a href="gad-admin.html">Accounts</a><a href="batch-test.html">Batch test</a><a href="gpu.html">GPU Capacity</a></nav>
+  </header>
+
+  <div class="department-layout">
+    <aside class="department-nav" aria-label="Department workspace">
+      <div class="nav-caption">Workspace</div>
+      <nav aria-label="Sections">
+        <button type="button" class="section-button on" data-section="overview" aria-controls="overview-panel" aria-current="page"><span>Overview</span></button>
+        <button type="button" class="section-button" data-section="departments" aria-controls="departments-panel"><span>Departments</span><span class="nav-count" id="nav-dept-count">0</span></button>
+        <button type="button" class="section-button" data-section="new" aria-controls="new-panel"><span>New department</span><span aria-hidden="true">＋</span></button>
+      </nav>
+      <div class="nav-caption selection-caption">Selected department</div>
+      <div class="selected-name" id="nav-dept-name">Choose a department</div>
+      <nav aria-label="Selected department sections">
+        <button type="button" class="section-button" data-section="files" aria-controls="files-panel" data-needs-department disabled><span>Files</span><span class="nav-count" id="nav-file-count">—</span></button>
+        <button type="button" class="section-button" data-section="accounts" aria-controls="accounts-panel" data-needs-department disabled><span>Accounts</span><span class="nav-count" id="nav-account-count">—</span></button>
+      </nav>
+      <p class="nav-help">Select a department to manage its files and accounts.</p>
+      <div class="nav-bottom"><button class="mini" id="refresh" type="button">Refresh data</button><span id="refresh-status" role="status"></span></div>
+    </aside>
+
+    <main class="department-main" id="workspace" tabindex="-1">
+      <div class="panel hidden" id="unavailable" role="alert"><div class="banner" id="unavailable-text"></div></div>
+      <div class="workspace-heading">
+        <div><div class="nav-caption">Department management</div><h1 id="section-title" tabindex="-1">Overview</h1><p id="section-description">Storage, files and accounts at a glance.</p></div>
+        <div class="field department-picker"><label for="department-select">Selected department</label><select id="department-select"><option value="">Choose a department</option></select></div>
+      </div>
+      <div class="department-context hidden" id="department-context">
+        <div><strong id="context-name"></strong><span id="context-status" class="chip"></span></div>
+        <div class="context-link"><a id="a-link" target="_blank" rel="noopener noreferrer">Open department chatbot ↗</a><button class="mini" id="a-copy" type="button">Copy link</button></div>
+      </div>
+
+      <section class="workspace-section overview-section" id="overview-panel" data-section-panel="overview" aria-labelledby="overview-title">
+        <h2 class="sr-only" id="overview-title">Department overview</h2>
+        <div class="summary-grid" aria-label="All departments">
+          <button class="summary-card" type="button" data-section="departments"><span>Departments</span><strong id="total-departments">—</strong><small id="active-departments">Loading departments…</small></button>
+          <div class="summary-card"><span>Storage allocated</span><strong id="total-quota">—</strong><small id="total-used">Used by departments</small></div>
+          <div class="summary-card"><span>Files</span><strong id="total-files">—</strong><small id="total-ready">Ready for the chatbot</small></div>
+          <div class="summary-card"><span>Accounts</span><strong id="total-accounts">—</strong><small>Across all departments</small></div>
+        </div>
+        <div class="panel"><h2>Server storage</h2><div class="body"><p class="hint" id="disk-hint">Loading storage information…</p></div></div>
+        <div class="panel hidden" id="selected-overview">
+          <h2><span id="overview-dept-name">Selected department</span><a class="mini" id="overview-chat-link" target="_blank" rel="noopener noreferrer">Open chatbot ↗</a></h2>
+          <div class="body">
+            <div class="selected-summary"><div><span class="nav-caption">Storage</span><div id="overview-usage"></div></div><div><span class="nav-caption">Launcher</span><p id="overview-launcher"></p></div></div>
+            <div class="quick-links"><button class="quick-link" type="button" data-section="files"><b>Files <span id="overview-file-count"></span></b><span>Upload, inspect and process documents →</span></button><button class="quick-link" type="button" data-section="accounts"><b>Accounts <span id="overview-account-count"></span></b><span>Add accounts and manage access →</span></button></div>
+          </div>
+        </div>
+        <div class="panel" id="choose-department"><div class="empty-section"><h2>Everything for a department, in one place</h2><p>Choose a department from the selector above, or open the department list.</p><div class="row-actions"><button class="primary" type="button" data-section="departments">View departments</button><button class="mini" type="button" data-section="new">New department</button></div></div></div>
+      </section>
+
+      <section class="panel workspace-section list-section hidden" id="departments-panel" data-section-panel="departments" aria-labelledby="departments-title">
+        <h2 id="departments-title">Departments <button class="primary" type="button" data-section="new">New department</button></h2>
+        <div class="list-toolbar"><div class="field search-field"><label for="dept-search">Find a department</label><input id="dept-search" type="search" placeholder="Search name or short name…" /></div><div class="field"><label for="dept-filter">Status</label><select id="dept-filter"><option value="">All departments</option><option value="active">Active</option><option value="disabled">Disabled</option></select></div></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Department</th><th>Storage used</th><th>Files</th><th>Accounts</th><th>Status</th><th>Launcher</th><th>Actions</th></tr></thead><tbody id="dept-rows"><tr><td colspan="7" class="note">Loading…</td></tr></tbody></table>
+        </div>
+        <div class="list-footer"><span id="dept-range" role="status"></span><div><button class="mini" id="dept-prev" type="button" disabled>Previous</button><span id="dept-page">Page 1 of 1</span><button class="mini" id="dept-next" type="button" disabled>Next</button></div></div>
+      </section>
+
+      <section class="panel workspace-section hidden" id="new-panel" data-section-panel="new" aria-labelledby="new-title">
+        <h2 id="new-title">New department</h2>
+        <div class="body">
+          <p class="hint">Create a department, allocate its storage, then add its first admin account.</p>
+          <p class="hint" id="new-disk-hint"></p>
+          <div class="form-row">
+            <div class="field"><label for="d-name">Department name</label><input id="d-name" type="text" maxlength="120" placeholder="e.g. Health and Family Welfare" autocomplete="off" /></div>
+            <div class="field"><label for="d-slug">Short name (English, for links)</label><input id="d-slug" type="text" maxlength="31" placeholder="e.g. health" autocomplete="off" spellcheck="false" /></div>
+            <div class="field"><label for="d-size">Storage</label><div class="size-input"><input id="d-size" type="number" min="1" step="any" placeholder="e.g. 5" /><select id="d-unit" aria-label="Storage unit"><option>MB</option><option selected>GB</option><option>TB</option></select></div></div>
+            <button class="primary" id="create" type="button" disabled>Create</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel workspace-section list-section hidden" id="accounts-panel" data-section-panel="accounts" aria-labelledby="a-title">
+        <h2><span id="a-title">Accounts</span><button class="mini" type="button" data-expand="account-create">Add account</button></h2>
+        <details class="inline-form" id="account-create"><summary>New account details</summary><div class="body">
+          <div class="acct-row" id="a-form">
+            <div class="field"><label>Username</label><input name="username" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="e.g. health.admin" /></div>
+            <div class="field"><label>Password (8+ characters)</label><input name="password" type="password" autocomplete="new-password" /></div>
+            <div class="field"><label>Role</label><select name="role"><option value="admin">Admin — department panel</option><option value="user">User — asks the chatbot</option></select></div>
+            <button class="primary" data-add type="button">Add account</button>
+          </div>
+          <p class="hint">Users ask the department’s chatbot; admins also manage its files and accounts. Share their username, password and department link with them.</p>
+        </div></details>
+        <div class="list-toolbar"><div class="field search-field"><label for="account-search">Find an account</label><input id="account-search" type="search" placeholder="Search username…" /></div><div class="field"><label for="account-filter">Role</label><select id="account-filter"><option value="">All roles</option><option value="admin">Admins</option><option value="user">Users</option></select></div></div>
+        <div class="table-wrap"><table><thead><tr><th>Account</th><th>Role</th><th>Status</th><th>Last sign-in</th><th>Actions</th></tr></thead><tbody id="a-rows"></tbody></table></div>
+        <div class="list-footer"><span id="account-range" role="status"></span><div><button class="mini" id="account-prev" type="button" disabled>Previous</button><span id="account-page">Page 1 of 1</span><button class="mini" id="account-next" type="button" disabled>Next</button></div></div>
+      </section>
+
+      <section class="panel workspace-section list-section hidden" id="files-panel" data-section-panel="files" aria-labelledby="f-title">
+        <h2><span id="f-title">Files</span><span id="f-usage"></span><button class="mini" type="button" data-expand="upload-files">Add files</button></h2>
+        <details class="inline-form" id="upload-files"><summary>Upload files</summary><div class="body">
+          <div class="drop" id="drop"><div>Drop files here, or</div><input id="file-input" type="file" multiple class="hidden" /><button class="primary" id="pick" type="button">Add files…</button><div class="hint" id="type-hint"></div></div>
+          <div class="uploads" id="uploads"></div>
+        </div></details>
+        <div class="processing-toolbar"><div class="hint" id="process-hint"></div><button class="primary" id="process-new" type="button" disabled>Process new files</button></div>
+        <details class="processing-help"><summary>About file processing</summary><p>Uploading stores a file. Processing reads it into the department’s chatbot: Word, PowerPoint, text and PDFs with their own text. Scanned PDFs and images are marked “Needs OCR” and read in a separate OCR run while the bots are not answering.</p></details>
+        <div class="list-toolbar"><div class="field search-field"><label for="file-search">Find a file</label><input id="file-search" type="search" placeholder="Search filename…" /></div><div class="field"><label for="file-filter">Processing</label><select id="file-filter"><option value="">All files</option><option value="done">Ready</option><option value="not_started">Not processed</option><option value="queued">Waiting</option><option value="processing">Processing</option><option value="needs_ocr">Needs OCR</option><option value="failed">Failed</option></select></div></div>
+        <div class="table-wrap"><table><thead><tr><th>File</th><th>Type</th><th>Size</th><th>Added</th><th>Processing</th><th>Actions</th></tr></thead><tbody id="file-rows"></tbody></table></div>
+        <div class="list-footer"><span id="file-range" role="status"></span><div><button class="mini" id="file-prev" type="button" disabled>Previous</button><span id="file-page">Page 1 of 1</span><button class="mini" id="file-next" type="button" disabled>Next</button></div></div>
+      </section>
+    </main>
+  </div>
+  <div id="toast" role="status"></div>
+  <script src="branding.js"></script>
+  <script src="platform-assets/platform.js?v=department-sections-1"></script>
+  <script src="departments.js?v=sections-1"></script>
+</body>
+</html>

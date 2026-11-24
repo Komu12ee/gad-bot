@@ -1,0 +1,26 @@
+{
+  "fg2": {
+    "nodePort": 3003,
+    "flaskPort": 5003,
+    "collection": "db3",
+    "dataRoot": "fg2",
+    "sarvamKeyEnv": "SARVAM_API_KEY_FG2",
+    "label": "GAD Governance Assistant",
+    "shortLabel": "GAD",
+    "org": "General Administration Department, Government of Chhattisgarh",
+    "subtitle": "Governance Assistant",
+    "logo": "img/cg-emblem.png"
+  },
+  "gad": {
+    "nodePort": 3003,
+    "flaskPort": 5003,
+    "collection": "db3",
+    "dataRoot": "fg2",
+    "sarvamKeyEnv": "SARVAM_API_KEY_FG2",
+    "label": "GAD Governance Assistant",
+    "shortLabel": "GAD",
+    "org": "General Administration Department, Government of Chhattisgarh",
+    "subtitle": "Governance Assistant",
+    "logo": "img/cg-emblem.png"
+  }
+}

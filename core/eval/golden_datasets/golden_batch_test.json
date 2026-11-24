@@ -1,0 +1,122 @@
+[
+  {
+    "id": "BT001",
+    "question": "स्थानांतरण नीति 2026-27 के मुख्य प्रावधान क्या हैं और अनुसूचित क्षेत्रों में सेवा की न्यूनतम अवधि कितनी है?",
+    "expected": "स्थानांतरण नीति 2026-27 के अनुसार अनुसूचित क्षेत्रों (बस्तर एवं सरगुजा संभाग) में पदस्थ शासकीय सेवकों की न्यूनतम सेवा अवधि 3 वर्ष निर्धारित की गई है।",
+    "intent": "CURRENT_RULE",
+    "category": "policy",
+    "expected_answerable": true
+  },
+  {
+    "query_id": "BT002",
+    "question": "What is the maximum duration of Child Care Leave (CCL) admissible to women government employees?",
+    "expected": "Women government employees are entitled to a maximum of 730 days of Child Care Leave (CCL) during their entire service for their two eldest surviving children below 18 years of age.",
+    "intent": "CURRENT_RULE",
+    "category": "policy",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT003",
+    "question": "1 जुलाई 2025 से सातवें वेतनमान में शासकीय सेवकों के लिए महंगाई भत्ता (DA) की स्वीकृत दर क्या है?",
+    "expected": "दिनांक 1 जुलाई 2025 से शासकीय सेवकों के लिए महंगाई भत्ता 50% की दर से स्वीकृत किया गया है।",
+    "intent": "NUMBER",
+    "category": "finance",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT004",
+    "question": "who is the anupam asish toppo and what are his current assignments?",
+    "expected": "Shri Anupam Ashish Toppo is a State Administrative Service (SAS) officer serving as Deputy Collector Raipur and OSD to the Hon. Minister of Finance in Mantralaya.",
+    "intent": "LOOKUP",
+    "category": "officer_lookup",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT005",
+    "question": "Who is Shri Mayank Agrawal in the administrative setup?",
+    "expected": "Shri Mayank Agrawal is a Divisional Forest Officer (DFO) in the State Administrative Cadre.",
+    "intent": "LOOKUP",
+    "category": "officer_lookup",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT006",
+    "question": "How are collectors and divisional commissioners appointed?",
+    "expected": "Appointments of Collectors and Divisional Commissioners are made from the Indian Administrative Service (IAS) cadre through state government notifications and cadre allocations under GAD.",
+    "intent": "PROCEDURE",
+    "category": "governance",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT007",
+    "question": "How does deputation to the Centre or to other states work, and who can apply?",
+    "expected": "Deputation is governed under central and state service rules, typically for an initial period of 3 years extendable as per government consent and vigilance clearance.",
+    "intent": "PROCEDURE",
+    "category": "governance",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT008",
+    "question": "अनुकंपा नियुक्ति के लिए आवेदन प्रस्तुत करने की समय सीमा क्या है?",
+    "expected": "शासकीय सेवक की सेवाकाल में मृत्यु होने पर आश्रित परिवार द्वारा मृत्यु दिनांक से 45 दिवस के भीतर अनुकंपा नियुक्ति हेतु आवेदन प्रस्तुत किया जाना आवश्यक है।",
+    "intent": "CURRENT_RULE",
+    "category": "policy",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT009",
+    "question": "What is the penalty for private tutoring by government school teachers under conduct rules?",
+    "expected": "I could not find this in the available documents.",
+    "intent": "UNANSWERABLE",
+    "category": "refusal",
+    "expected_answerable": false
+  },
+  {
+    "id": "BT010",
+    "question": "What is the uptime SLA guarantee for core hosting at the CHiPS State Data Centre?",
+    "expected": "The CHiPS State Data Centre guarantees an uptime SLA target of 99.982% for core hosting infrastructure with a latency under 5 ms.",
+    "intent": "NUMBER",
+    "category": "it_infrastructure",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT011",
+    "question": "How do I file an RTI application with GAD, and who is the Public Information Officer?",
+    "expected": "RTI applications can be submitted to the designated Public Information Officer (PIO) / State Public Information Officer (SPIO) of GAD along with the prescribed application fee.",
+    "intent": "PROCEDURE",
+    "category": "rti",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT012",
+    "question": "दिव्यांग शासकीय सेवकों के लिए विशेष वाहन भत्ता की स्वीकृत दर क्या है?",
+    "expected": "पात्र दिव्यांग शासकीय सेवकों को प्रतिमाह ₹1,500 विशेष वाहन भत्ता प्रदान किया जाता है।",
+    "intent": "NUMBER",
+    "category": "allowance",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT013",
+    "question": "Who was the Chief Minister of Chhattisgarh in 1985?",
+    "expected": "I could not find this in the available documents. The State of Chhattisgarh was established on 1 November 2000.",
+    "intent": "UNANSWERABLE",
+    "category": "refusal",
+    "expected_answerable": false
+  },
+  {
+    "id": "BT014",
+    "question": "How many earned leave days can be accumulated in the service book of a state employee?",
+    "expected": "Government servants can accumulate a maximum of 300 days of Earned Leave (EL) in their leave account during their entire service period.",
+    "intent": "NUMBER",
+    "category": "leave_policy",
+    "expected_answerable": true
+  },
+  {
+    "id": "BT015",
+    "question": "What modifications were notified in notification RULE/297/2025-GAD-3 for the Staff Selection Board?",
+    "expected": "Notification No. RULE/297/2025-GAD-3 amended the rules under Article 309 and Section 3(4) of the Chhattisgarh Staff Selection Board Act 2026.",
+    "intent": "CURRENT_RULE",
+    "category": "amendment",
+    "expected_answerable": true
+  }
+]

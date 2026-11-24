@@ -1,0 +1,102 @@
+[
+  {
+    "query_id": "GEN001",
+    "query": "स्थानांतरण नीति 2026-27 के अनुसार अनुसूचित क्षेत्रों में शासकीय सेवकों की न्यूनतम पदावधि क्या है?",
+    "passages": "[\"[1] परिपत्र क्रमांक एफ 14-2/2026/1-3: अनुसूचित क्षेत्रों (बस्तर एवं सरगुजा संभाग) में पदस्थ शासकीय सेवकों की न्यूनतम पदावधि 3 वर्ष निर्धारित की जाती है।\"]",
+    "reference_answer": "स्थानांतरण नीति 2026-27 के अनुसार अनुसूचित क्षेत्रों (बस्तर एवं सरगुजा संभाग) में पदस्थ शासकीय सेवकों की न्यूनतम पदावधि 3 वर्ष निर्धारित की गई है [1]।",
+    "expected_language": "hi",
+    "answerable": true,
+    "expected_units": "[\"वर्ष\"]",
+    "max_words": 40
+  },
+  {
+    "query_id": "GEN002",
+    "query": "What is the penalty for late submission of annual property returns by government servants?",
+    "passages": "[]",
+    "reference_answer": "I could not find this in the available documents. Please refer to the official GAD conduct rules.",
+    "expected_language": "en",
+    "answerable": false,
+    "expected_units": "[]",
+    "max_words": 30
+  },
+  {
+    "query_id": "GEN003",
+    "query": "1 जुलाई 2025 से शासकीय सेवकों के लिए महंगाई भत्ता (DA) कितने प्रतिशत स्वीकृत किया गया है?",
+    "passages": "[\"[1] वित्त विभाग आदेश: राज्य शासन द्वारा शासकीय सेवकों को दिनांक 01.07.2025 से 46% के स्थान पर 50% की दर से महंगाई भत्ता स्वीकृत किया जाता है।\"]",
+    "reference_answer": "दिनांक 1 जुलाई 2025 से शासकीय सेवकों के लिए महंगाई भत्ता 50% की दर से स्वीकृत किया गया है [1]।",
+    "expected_language": "hi",
+    "answerable": true,
+    "expected_units": "[\"%\"]",
+    "max_words": 35
+  },
+  {
+    "query_id": "GEN004",
+    "query": "What is the maximum duration of Child Care Leave (CCL) admissible to women government employees?",
+    "passages": "[\"[1] Rule 38-C: Women government servants are entitled to a maximum of 730 days of Child Care Leave (CCL) during their entire service for up to two eldest surviving children below 18 years of age.\"]",
+    "reference_answer": "Women government employees are entitled to a maximum of 730 days of Child Care Leave (CCL) during their entire service period for their two eldest surviving children below 18 years of age [1].",
+    "expected_language": "en",
+    "answerable": true,
+    "expected_units": "[\"days\", \"years\"]",
+    "max_words": 45
+  },
+  {
+    "query_id": "GEN005",
+    "query": "अनुकंपा नियुक्ति के लिए आवेदन प्रस्तुत करने की निर्धारित समय सीमा कितनी है?",
+    "passages": "[\"[1] परिपत्र: शासकीय सेवक की मृत्यु होने पर आश्रित परिवार द्वारा आवेदन मृत्यु दिनांक से अधिकतम 45 दिवस के भीतर प्रस्तुत किया जाना आवश्यक है।\"]",
+    "reference_answer": "अनुकंपा नियुक्ति हेतु आवेदन शासकीय सेवक की मृत्यु दिनांक से अधिकतम 45 दिवस के भीतर प्रस्तुत किया जाना आवश्यक है [1]।",
+    "expected_language": "hi",
+    "answerable": true,
+    "expected_units": "[\"दिवस\"]",
+    "max_words": 35
+  },
+  {
+    "query_id": "GEN006",
+    "query": "How many days of maternity leave are provided to female contract employees under the new 2026 circular?",
+    "passages": "[]",
+    "reference_answer": "I could not find this in the available documents.",
+    "expected_language": "en",
+    "answerable": false,
+    "expected_units": "[]",
+    "max_words": 25
+  },
+  {
+    "query_id": "GEN007",
+    "query": "श्री अनुपम आशीष टोप्पो का वर्तमान पदभार एवं विभाग क्या है?",
+    "passages": "[\"[1] सिविल लिस्ट अभिलेख: श्री अनुपम आशीष टोप्पो, राज्य प्रशासनिक सेवा (SAS), डिप्टी कलेक्टर रायपुर (पदभार 30.07.2025) एवं ओएसडी, मान. मंत्री वित्त विभाग, मंत्रालय (पदभार 16.03.2026)।\"]",
+    "reference_answer": "श्री अनुपम आशीष टोप्पो राज्य प्रशासनिक सेवा (SAS) अधिकारी हैं। वे वर्तमान में डिप्टी कलेक्टर रायपुर तथा वित्त मंत्री कार्यालय में विशेष कर्तव्यस्थ अधिकारी (OSD) के पद पर पदस्थ हैं [1]।",
+    "expected_language": "hi",
+    "answerable": true,
+    "expected_units": "[]",
+    "max_words": 45
+  },
+  {
+    "query_id": "GEN008",
+    "query": "What is the uptime SLA percentage guaranteed for core hosting by CHiPS State Data Centre?",
+    "passages": "[\"[1] CHiPS Service Level Agreement: Core Hosting Infrastructure SLA Target is 99.982% with less than 5 ms latency guarantee.\"]",
+    "reference_answer": "The CHiPS State Data Centre guarantees an uptime SLA target of 99.982% for core hosting infrastructure with a latency under 5 ms [1].",
+    "expected_language": "en",
+    "answerable": true,
+    "expected_units": "[\"%\", \"ms\"]",
+    "max_words": 35
+  },
+  {
+    "query_id": "GEN009",
+    "query": "दिव्यांग कर्मचारियों को प्रति माह कितना विशेष वाहन भत्ता दिया जाता है?",
+    "passages": "[\"[1] परिपत्र: पात्र दिव्यांग शासकीय सेवकों को ₹1,500 प्रति माह विशेष वाहन भत्ता स्वीकृत किया जाता है।\"]",
+    "reference_answer": "पात्र दिव्यांग शासकीय सेवकों को ₹1,500 प्रतिमाह विशेष वाहन भत्ता प्रदान किया जाता है [1]।",
+    "expected_language": "hi",
+    "answerable": true,
+    "expected_units": "[\"₹\", \"रुपये\"]",
+    "max_words": 30
+  },
+  {
+    "query_id": "GEN010",
+    "query": "Who is currently the chief justice of the high court of chhattisgarh?",
+    "passages": "[]",
+    "reference_answer": "I could not find this in the available documents. The GAD database contains executive branch circulars and personnel records.",
+    "expected_language": "en",
+    "answerable": false,
+    "expected_units": "[]",
+    "max_words": 35
+  }
+]

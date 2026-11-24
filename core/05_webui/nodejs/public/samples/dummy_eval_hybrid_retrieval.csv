@@ -1,0 +1,16 @@
+﻿query_id,query,gold_passage_ids,query_language,doc_language,is_exact_match_query
+Q001,स्थानांतरण नीति 2026-27 के मुख्य प्रावधान क्या हैं?,"[""circular_transfer_2026.pdf#1"", ""circular_transfer_2026.pdf#2""]",hi,hi,false
+Q002,What is the maximum age relaxation for OBC candidates in government recruitment?,"[""gad_recruitment_rules_2024.pdf#4"", ""age_relaxation_memo.pdf#1""]",en,hi,false
+Q003,आदेश क्रमांक एफ-2-4/2026/1-3 में अनुकंपा नियुक्ति के संबंध में क्या निर्देश हैं?,"[""order_f2_4_2026.pdf#1""]",hi,hi,true
+Q004,What are the major e-governance and IT infrastructure projects implemented by CHiPS?,"[""c74f4f5e4d5ce7f8"", ""e8b15659eb74c65f""]",en,en,false
+Q005,छत्तीसगढ़ इन्फोटेक प्रमोशन सोसाइटी (CHiPS) की स्थापना और मुख्य उद्देश्य,"[""5f369c50ead865ab"", ""3175465fb5fc7c23""]",hi,hi,false
+Q006,Circular No. 14/2024/Fin regarding contingency fund expenditure ceiling,"[""fin_circular_14_2024.pdf#1""]",en,en,true
+Q007,शासकीय सेवकों के लिए 1 जुलाई 2025 से महंगाई भत्ता (DA) दरें,"[""finance_da_order_2025.pdf#1"", ""finance_da_order_2025.pdf#2""]",hi,hi,false
+Q008,divyang karmachariyon ke liye vahan bhatta niyam aur eligibility,"[""divyang_allowance_circular.pdf#1""]",hinglish,hi,false
+Q009,What is the procedure for Child Care Leave (CCL) for women government servants?,"[""gad_leave_rules_2024.pdf#2""]",en,hi,false
+Q010,संविदा भर्ती नियमों के तहत मातृत्व अवकाश और आकस्मिक अवकाश पात्रता,"[""contract_service_rules_2022.pdf#5""]",hi,hi,false
+Q011,Notification No. GAD-EST-2023-88 regarding administrative officers seniority,"[""gad_order_88_2023.pdf#1""]",en,en,true
+Q012,State Data Centre (SDC) hosting services and cloud infrastructure under CHiPS,"[""3175465fb5fc7c23"", ""c74f4f5e4d5ce7f8""]",en,en,false
+Q013,चतुर्थ श्रेणी कर्मचारियों के लिए वर्दी एवं धुलाई भत्ता की संशोधित दरें,"[""uniform_allowance_2024.pdf#1""]",hi,hi,false
+Q014,chhattisgarh sachivalaya me online RTI apply karne ka niyam,"[""rti_rules_manual.pdf#5""]",hinglish,hi,false
+Q015,विभागीय पदोन्नति समिति (DPC) की बैठक आयोजित करने की समय सारिणी,"[""dpc_calendar_circular.pdf#1""]",hi,hi,false

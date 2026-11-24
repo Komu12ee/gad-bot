@@ -1,0 +1,11 @@
+TASK: List mentions in this text of ONLY these kinds of things. Copy each mention exactly.
+POST       = a designation, cadre or post (e.g. "Deputy Secretary", "अवर सचिव")
+SCHEME     = a named scheme
+INSTRUMENT = a named Act, Rule or Regulation
+BENEFIT    = an allowance, pay item, leave type, pension item
+DEPARTMENT = a department or office
+Ignore everything else (people's names, places, dates, numbers).
+
+TEXT: {{clause_text}}
+
+OUTPUT SCHEMA: {"mentions":[{"text":string,"kind":"POST"|"SCHEME"|"INSTRUMENT"|"BENEFIT"|"DEPARTMENT"}]}

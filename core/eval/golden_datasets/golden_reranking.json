@@ -1,0 +1,62 @@
+[
+  {
+    "query_id": "RR001",
+    "query": "स्थानांतरण नीति 2026-27 के तहत अनुसूचित क्षेत्रों में पदस्थापना की न्यूनतम अवधि",
+    "gold_passage_ids": "[\"63dfd3acb3182dc5_c001\"]",
+    "candidate_passage_ids": "[\"0007f1071c2918fc_c001\", \"efc290b78f6c8ad7_c002\", \"63dfd3acb3182dc5_c001\", \"bab670ac612f4f79_c001\"]"
+  },
+  {
+    "query_id": "RR002",
+    "query": "Maximum period of Child Care Leave (CCL) admissible to women government servants",
+    "gold_passage_ids": "[\"bab670ac612f4f79_c001\"]",
+    "candidate_passage_ids": "[\"efc290b78f6c8ad7_c001\", \"bab670ac612f4f79_c001\", \"63dfd3acb3182dc5_c002\", \"18ee1d1997164968_c001\"]"
+  },
+  {
+    "query_id": "RR003",
+    "query": "1 जुलाई 2025 से सातवें वेतनमान में महंगाई भत्ता (DA) की संशोधित दर",
+    "gold_passage_ids": "[\"efc290b78f6c8ad7_c001\"]",
+    "candidate_passage_ids": "[\"63dfd3acb3182dc5_c001\", \"18ee1d1997164968_c003\", \"efc290b78f6c8ad7_c001\", \"0007f1071c2918fc_c002\"]"
+  },
+  {
+    "query_id": "RR004",
+    "query": "Time limit in days to submit application for compassionate appointment",
+    "gold_passage_ids": "[\"18ee1d1997164968_c001\"]",
+    "candidate_passage_ids": "[\"45b4b2ca681a4c0d_c001\", \"18ee1d1997164968_c001\", \"bab670ac612f4f79_c002\", \"5f369c50ead865ab_c001\"]"
+  },
+  {
+    "query_id": "RR005",
+    "query": "Deputation tenure and rules governing Central Government deputation",
+    "gold_passage_ids": "[\"678e98966a2c4c56_c001\"]",
+    "candidate_passage_ids": "[\"0007f1071c2918fc_c001\", \"45b4b2ca681a4c0d_c001\", \"678e98966a2c4c56_c001\", \"63dfd3acb3182dc5_c001\"]"
+  },
+  {
+    "query_id": "RR006",
+    "query": "Official posting of Anupam Ashish Toppo as OSD in Mantralaya",
+    "gold_passage_ids": "[\"63dfd3acb3182dc5_c024\"]",
+    "candidate_passage_ids": "[\"45b4b2ca681a4c0d_c001\", \"efc290b78f6c8ad7_c001\", \"63dfd3acb3182dc5_c024\", \"18ee1d1997164968_c001\"]"
+  },
+  {
+    "query_id": "RR007",
+    "query": "Chhattisgarh Staff Selection Board amendment notification RULE/297/2025-GAD-3",
+    "gold_passage_ids": "[\"ecc05b64348b4c77_c001\"]",
+    "candidate_passage_ids": "[\"bab670ac612f4f79_c001\", \"ecc05b64348b4c77_c001\", \"63dfd3acb3182dc5_c001\", \"0007f1071c2918fc_c001\"]"
+  },
+  {
+    "query_id": "RR008",
+    "query": "State Data Centre uptime commitment and tier-3 hosting standards under CHiPS",
+    "gold_passage_ids": "[\"5f369c50ead865ab_c001\"]",
+    "candidate_passage_ids": "[\"45b4b2ca681a4c0d_c001\", \"efc290b78f6c8ad7_c002\", \"5f369c50ead865ab_c001\", \"18ee1d1997164968_c003\"]"
+  },
+  {
+    "query_id": "RR009",
+    "query": "दिव्यांग कर्मचारियों हेतु वाहन भत्ता की पात्रता शर्तें",
+    "gold_passage_ids": "[\"18ee1d1997164968_c003\"]",
+    "candidate_passage_ids": "[\"0007f1071c2918fc_c002\", \"18ee1d1997164968_c003\", \"678e98966a2c4c56_c001\", \"45b4b2ca681a4c0d_c001\"]"
+  },
+  {
+    "query_id": "RR010",
+    "query": "Circular No. 1329 dated 23.09.2026 administrative notifications",
+    "gold_passage_ids": "[\"bab670ac612f4f79_c002\"]",
+    "candidate_passage_ids": "[\"63dfd3acb3182dc5_c001\", \"bab670ac612f4f79_c002\", \"efc290b78f6c8ad7_c001\", \"18ee1d1997164968_c001\"]"
+  }
+]

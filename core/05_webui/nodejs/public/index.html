@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Reverse-proxy sub-path awareness: under /pipeline/<name>/, all same-origin
+       requests + redirects are prefixed with that base. Empty when hit directly. -->
+  <script>window.__APP_BASE__=(location.pathname.match(/^\/pipeline\/[^/]+/)||[''])[0];</script>
+  <title>Document Assistant</title>
+  <link rel="icon" href="img/cg-emblem.png" data-brand-favicon />
+  <link rel="stylesheet" href="design-system.css" />
+  <link rel="stylesheet" href="style.css?v=restore-gad-layout-1" />
+</head>
+
+<body>
+
+  <!-- ══ LOGIN SCREEN ════════════════════════════════════════════ -->
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <div id="login-screen">
+    <div id="login-card">
+      <div class="login-brand">
+        <img class="gov-logo gov-logo-lg" src="img/cg-emblem.png" alt="Government of Chhattisgarh" data-brand-logo />
+        <div>
+          <div class="login-brand-name" data-brand-name>Document Assistant</div>
+          <div class="login-brand-sub" data-brand-sub></div>
+        </div>
+      </div>
+
+      <form id="login-form" autocomplete="off" novalidate>
+        <div class="login-field">
+          <label for="login-username">Username</label>
+          <input id="login-username" type="text" placeholder="Enter username" autocomplete="username"
+            spellcheck="false" />
+        </div>
+        <div class="login-field">
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" placeholder="Enter password" autocomplete="current-password" />
+        </div>
+
+        <div id="login-error" class="login-error hidden"></div>
+
+        <button id="login-submit" type="submit">
+          <span id="login-btn-text">Sign In</span>
+          <span id="login-btn-spinner" class="hidden">
+            <span class="thinking-dot"></span>
+            <span class="thinking-dot"></span>
+            <span class="thinking-dot"></span>
+          </span>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <span data-brand-org>Government of Chhattisgarh</span> &nbsp;·&nbsp; Restricted Access
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ APP SHELL (hidden until logged in) ══════════════════════ -->
+  <div id="app-shell" class="hidden">
+
+    <!-- ── Sidebar ─────────────────────────────────────────────── -->
+    <aside id="sidebar">
+      <a class="brand" href="./" title="Go to home" aria-label="Home">
+        <img class="gov-logo" src="img/cg-emblem.png" alt="Government of Chhattisgarh" data-brand-logo />
+        <div>
+          <div class="brand-name" data-brand-name>Document Assistant</div>
+          <div class="brand-sub" data-brand-sub></div>
+        </div>
+      </a>
+
+      <!-- Nav -->
+      <a href="graph.html" class="nav-link" id="nav-graph">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="6" cy="6" r="3"></circle>
+          <circle cx="18" cy="6" r="3"></circle>
+          <circle cx="12" cy="18" r="3"></circle>
+          <line x1="8.5" y1="7.5" x2="15.5" y2="7.5"></line>
+          <line x1="7.5" y1="8.5" x2="10.5" y2="15.5"></line>
+          <line x1="16.5" y1="8.5" x2="13.5" y2="15.5"></line>
+        </svg>
+        Temporal Graph
+      </a>
+      <a href="documents.html" class="nav-link" id="nav-documents">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+        Documents
+      </a>
+      <!-- Accounts (GAD admins only; unhidden by app.js when role=admin) -->
+      <a href="gad-admin.html" class="nav-link hidden" id="nav-accounts">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        Accounts
+      </a>
+      <!-- Batch test (admins only; unhidden by app.js when role=admin) -->
+      <a href="batch-test.html" class="nav-link hidden" id="nav-batch">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"></path>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+        Batch test
+      </a>
+      <!-- GPU Capacity & Workload (IndiaAI / Yotta demo - admins only) -->
+      <a href="gpu.html" class="nav-link hidden" id="nav-gpu">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="4" width="16" height="16" rx="2" />
+          <rect x="9" y="9" width="6" height="6" />
+          <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3" />
+        </svg>
+        GPU Capacity (IndiaAI)
+      </a>
+      <!-- Departments (CHiPS admins; unhidden by app.js when this bot serves them) -->
+      <a href="departments.html" class="nav-link hidden" id="nav-departments">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 21h18"></path>
+          <path d="M5 21V7l7-4 7 4v14"></path>
+          <path d="M9 21v-6h6v6"></path>
+        </svg>
+        Departments
+      </a>
+
+      <!-- Evaluation with sub-tabs (admins only; unhidden by app.js when role=admin) -->
+      <div id="nav-eval-container" class="hidden">
+        <a href="evaluation.html" class="nav-link" id="nav-evaluation" style="margin-bottom:2px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 22V3m0 1c5-4 11 4 16 0v11c-5 4-11-4-16 0" />
+          </svg>
+          Evaluation
+        </a>
+        <div class="nav-sub-list">
+          <a href="evaluation.html#corrections" class="nav-sub-link" id="nav-eval-corrections">· Corrections</a>
+          <a href="evaluation.html#components" class="nav-sub-link" id="nav-eval-comp">· Component evaluation</a>
+          <a href="evaluation.html#history" class="nav-sub-link" id="nav-eval-history">· Run history</a>
+          <a href="batch-test.html" class="nav-sub-link" id="nav-eval-e2e">· End-to-end</a>
+        </div>
+      </div>
+
+      <section class="sidebar-section flex-grow" aria-labelledby="recent-chats-heading">
+        <div class="section-label" id="recent-chats-heading">Recent chats</div>
+        <ul class="chat-list" id="chat-list">
+          <li class="chats-empty">Loading chats…</li>
+        </ul>
+      </section>
+
+      <!-- Signed-in user + sign out -->
+      <div class="user-bar">
+        <svg class="user-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span id="user-display" class="user-name">—</span>
+        <button id="btn-logout" title="Sign out">Sign out</button>
+      </div>
+
+      <footer class="sidebar-footer">
+        <span data-brand-org>Government of Chhattisgarh</span>
+      </footer>
+    </aside>
+
+    <!-- ── Main area ───────────────────────────────────────────── -->
+    <main id="main">
+
+      <!-- Mounted by the shared ChatUI module below. -->
+    </main>
+
+  </div><!-- /#app-shell -->
+
+  <!-- ── Source drawer (slides in from right) ──────────────────── -->
+  <div id="drawer-overlay" class="hidden"></div>
+  <aside id="source-drawer" class="hidden">
+    <div class="drawer-header">
+      <span class="section-label">Sources</span>
+      <button id="drawer-close" aria-label="Close">✕</button>
+    </div>
+    <div id="drawer-body"></div>
+  </aside>
+
+  <!-- ── PDF panel (half screen, slides in from left) ─────────── -->
+  <div id="pdf-overlay" class="hidden"></div>
+  <aside id="pdf-panel" class="hidden">
+    <div class="pdf-panel-header">
+      <div class="pdf-panel-title-row">
+        <span class="section-label">DOCUMENT</span>
+        <button id="pdf-close" aria-label="Close PDF">✕</button>
+      </div>
+      <div id="pdf-title" class="pdf-filename"></div>
+    </div>
+    <div class="pdf-panel-body">
+      <div id="pdf-loading" class="pdf-loading">
+        <div class="thinking-dot"></div>
+        <div class="thinking-dot"></div>
+        <div class="thinking-dot"></div>
+        <span>Loading PDF…</span>
+      </div>
+      <iframe id="pdf-iframe" class="hidden" title="PDF viewer"></iframe>
+    </div>
+  </aside>
+
+  <!-- ── Toast ─────────────────────────────────────────────────── -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script src="chat-ui.js?v=shared-chat-1"></script>
+  <script>window.ChatUI.mount(document.getElementById('main'));</script>
+  <script src="branding.js"></script>
+  <script src="query-debug.js?v=processing-1"></script>
+  <script type="module" src="app.js?v=shared-chat-1"></script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "gad-bot",
+  "version": "1.0.0",
+  "description": "GAD Governance Assistant & Temporal Knowledge Graph",
+  "main": "run.py",
+  "scripts": {
+    "start": "python run.py",
+    "docs": "python scripts/update_docs.py",
+    "flask": "python core/05_webui/app.py",
+    "node": "cd core/05_webui/nodejs && node server.js",
+    "build-graph": "python core/04_embeddings_and_kg/scripts/build_graph.py"
+  },
+  "keywords": [
+    "gad",
+    "rag",
+    "knowledge-graph",
+    "temporal-retriever",
+    "chhattisgarh"
+  ],
+  "author": "",
+  "license": "ISC"
+}

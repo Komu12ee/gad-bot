@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>window.__APP_BASE__=(location.pathname.match(/^\/pipeline\/[^/]+/)||[''])[0];</script>
+  <title>IndiaAI GPU Capacity Demonstration — Yotta</title>
+  <meta name="page-name" content="GPU Capacity" />
+  <link rel="icon" href="img/cg-emblem.png" data-brand-favicon />
+  <link rel="stylesheet" href="design-system.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: var(--font); background: var(--canvas); color: var(--text); min-height: 100vh; font-size: 13.5px; -webkit-font-smoothing: antialiased; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+             padding: 11px 22px; background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: inherit; }
+    .brand img { width: 30px; height: 30px; object-fit: contain; }
+    .brand b { font-weight: 600; font-size: 15px; }
+    .brand span { font-size: 12px; color: var(--text-3); }
+    header nav { display: flex; align-items: center; gap: 14px; }
+    header nav a { color: var(--navy); text-decoration: none; font-weight: 500; font-size: 13px; }
+    header nav a:hover { text-decoration: underline; }
+
+    .wrap { max-width: 1200px; margin: 24px auto; padding: 0 20px 48px; display: flex; flex-direction: column; gap: 20px; }
+
+    /* Hero Banner */
+    .hero-banner { background: linear-gradient(135deg, #0d2137 0%, #173a5e 100%); color: #fff; padding: 22px 26px; border-radius: var(--radius);
+                   box-shadow: 0 4px 18px rgba(13,33,55,.18); display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .hero-left h1 { font-size: 20px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+    .hero-left p { font-size: 13px; opacity: .88; max-width: 680px; line-height: 1.5; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 12px;
+                  background: rgba(255,255,255,.15); font-size: 11.5px; font-weight: 600; letter-spacing: .02em; }
+
+    .pill-status { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 20px;
+                   font-size: 12.5px; font-weight: 700; letter-spacing: .03em; border: 1px solid rgba(255,255,255,.2); }
+    .pill-status.idle { background: rgba(255,255,255,.12); color: #e2e8f0; }
+    .pill-status.running { background: #10b981; color: #fff; box-shadow: 0 0 16px rgba(16,185,129,.55); border-color: transparent; }
+    .status-dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+    .pill-status.running .status-dot { animation: pulseDot 1.4s infinite; }
+
+    @keyframes pulseDot {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.8; }
+    }
+
+    /* Actions & Controls Bar */
+    .controls-bar { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px;
+                    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; box-shadow: var(--shadow); }
+    .btn-action-group { display: flex; align-items: center; gap: 12px; }
+
+    button.btn-start { padding: 12px 24px; border: 0; border-radius: var(--radius);
+                       background: linear-gradient(180deg, #10b981 0%, #059669 100%); color: #fff;
+                       font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+                       box-shadow: 0 2px 6px rgba(5,150,105,.35); transition: all .15s ease; }
+    button.btn-start:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); }
+    button.btn-start:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    button.btn-stop { padding: 12px 24px; border: 0; border-radius: var(--radius);
+                      background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%); color: #fff;
+                      font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+                      box-shadow: 0 2px 6px rgba(220,38,38,.35); transition: all .15s ease; }
+    button.btn-stop:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); }
+    button.btn-stop:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .opt-group { display: flex; align-items: center; gap: 18px; font-size: 13px; color: var(--text-2); }
+    .opt-group label { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    .opt-group select { padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 13px; }
+
+    /* Metric Cards Grid */
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .metric-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px;
+                   box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; gap: 10px; position: relative; overflow: hidden; }
+    .metric-card.highlight { border-color: rgba(16,185,129,.4); }
+    .card-label { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; color: var(--text-3); }
+    .card-num { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1.1; display: flex; align-items: baseline; gap: 4px; }
+    .card-num small { font-size: 15px; font-weight: 500; color: var(--text-2); }
+    
+    .meter-track { width: 100%; height: 7px; background: var(--raised); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+    .meter-bar { height: 100%; border-radius: 4px; transition: width .3s ease; }
+    .meter-bar.gpu { background: linear-gradient(90deg, #10b981 0%, #059669 100%); }
+    .meter-bar.mem { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); }
+    .card-foot { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+    /* Real-Time Chart */
+    .chart-panel { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+    .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+    .chart-header h3 { font-size: 14px; font-weight: 600; color: var(--text); }
+    .chart-legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-2); }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.gpu { background: #10b981; }
+    .dot.mem { background: #3b82f6; }
+    .dot.rate { background: #f59e0b; }
+    canvas#chart-canvas { width: 100%; height: 220px; display: block; background: var(--canvas); border-radius: 4px; }
+
+    /* Live Activity Log */
+    .log-panel { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .log-header { padding: 12px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .log-header h3 { font-size: 13.5px; font-weight: 600; }
+    .log-table-wrap { max-height: 280px; overflow-y: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; }
+    table.log-table { width: 100%; border-collapse: collapse; }
+    table.log-table th, table.log-table td { padding: 8px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    table.log-table th { background: var(--raised); font-size: 11px; text-transform: uppercase; color: var(--text-3); font-weight: 600; position: sticky; top: 0; }
+    .badge-type { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; }
+    .badge-type.image { background: rgba(59,130,246,.15); color: #2563eb; }
+    .badge-type.text { background: rgba(16,185,129,.15); color: #059669; }
+    .log-ok { color: #10b981; font-weight: 600; }
+    .log-err { color: #ef4444; font-weight: 600; }
+
+    #toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+             background: var(--bg); border: 1px solid var(--border); padding: 11px 20px; border-radius: var(--radius);
+             font-size: 13.5px; font-weight: 500; box-shadow: var(--shadow); opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 1000; }
+    #toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="./" title="Go to home" aria-label="Home">
+      <img src="img/cg-emblem.png" alt="" data-brand-logo />
+      <b data-brand-name>GAD</b><span>IndiaAI GPU Compute (Yotta)</span>
+    </a>
+    <nav>
+      <a href="./">← Chat</a>
+      <a href="documents.html">Documents</a>
+      <a href="batch-test.html">Batch test</a>
+      <a href="departments.html">Departments</a>
+      <a href="evaluation.html">Evaluation</a>
+      <a href="gad-admin.html">Accounts</a>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-left">
+        <div class="hero-badge">🇮🇳 IndiaAI Compute Programme · Yotta Cloud Infrastructure</div>
+        <h1>GPU Capacity Demonstration & Synthetic Load Generator</h1>
+        <p>
+          Simulates continuous high-throughput multimodal Vision-Language (VLM) requests and complex administrative reasoning against our local model server (:8000) to keep GPU Tensor cores and VRAM fully saturated for demonstration.
+        </p>
+      </div>
+      <div class="pill-status idle" id="status-pill">
+        <span class="status-dot"></span>
+        <span id="status-text">IDLE — READY</span>
+      </div>
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+      <div class="btn-action-group">
+        <button id="btn-start" class="btn-start">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Start Workload (Keep GPU Busy)
+        </button>
+        <button id="btn-stop" class="btn-stop" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+          Stop Workload Instantly
+        </button>
+      </div>
+
+      <div class="opt-group">
+        <label title="Generate 1024x1024 synthetic document page images to exercise the Vision Transformer (ViT)">
+          <input type="checkbox" id="chk-images" checked /> Include Multimodal Images
+        </label>
+        <label>
+          Workers:
+          <select id="sel-concurrency">
+            <option value="1">1 Worker</option>
+            <option value="2" selected>2 Workers (Balanced)</option>
+            <option value="4">4 Workers (Heavy Saturation)</option>
+          </select>
+        </label>
+        <span id="uptime-display" style="font-variant-numeric: tabular-nums; font-weight: 500;">Uptime: 0s</span>
+      </div>
+    </div>
+
+    <!-- Metric Cards Grid -->
+    <div class="metric-grid">
+      <div class="metric-card highlight">
+        <div class="card-label">GPU Compute Utilization</div>
+        <div class="card-num"><span id="val-gpu-util">0</span><small>%</small></div>
+        <div class="meter-track">
+          <div class="meter-bar gpu" id="bar-gpu-util" style="width: 0%"></div>
+        </div>
+        <div class="card-foot" id="val-gpu-name">Detecting GPU hardware…</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="card-label">VRAM Memory Bandwidth</div>
+        <div class="card-num"><span id="val-mem-used">0</span><small> / <span id="val-mem-total">80</span> GB</small></div>
+        <div class="meter-track">
+          <div class="meter-bar mem" id="bar-mem-util" style="width: 0%"></div>
+        </div>
+        <div class="card-foot"><span id="val-mem-pct">0</span>% Allocated · <span id="val-driver">Driver 550.54</span></div>
+      </div>
+
+      <div class="metric-card">
+        <div class="card-label">Thermal & Power Draw</div>
+        <div class="card-num">
+          <span id="val-temp">0</span><small>°C</small>
+          <span style="opacity:.3; margin: 0 4px;">|</span>
+          <span id="val-power">0</span><small>W</small>
+        </div>
+        <div class="card-foot">Target Power Cap: <span id="val-power-limit">700</span>W</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="card-label">Synthetic Generation Rate</div>
+        <div class="card-num"><span id="val-tokens-sec">0</span><small> tok/s</small></div>
+        <div class="card-foot">
+          <span id="val-requests-count">0 total requests</span> · Avg <span id="val-latency">0</span>ms
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-Time Chart -->
+    <div class="chart-panel">
+      <div class="chart-header">
+        <h3>Live GPU Load & VRAM Saturation (Rolling 60 Seconds)</h3>
+        <div class="chart-legend">
+          <div class="legend-item"><span class="dot gpu"></span> GPU Compute %</div>
+          <div class="legend-item"><span class="dot mem"></span> VRAM Usage %</div>
+          <div class="legend-item"><span class="dot rate"></span> Generated Tokens / sec</div>
+        </div>
+      </div>
+      <canvas id="chart-canvas" width="1160" height="220"></canvas>
+    </div>
+
+    <!-- Live Activity Log -->
+    <div class="log-panel">
+      <div class="log-header">
+        <h3>Live Synthetic Request Stream (:8000)</h3>
+        <span id="target-model-badge" style="font-size: 11.5px; color: var(--text-2);">Target Model: ocr-32b</span>
+      </div>
+      <div class="log-table-wrap">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Worker</th>
+              <th>Type</th>
+              <th>Synthetic Prompt / Image Task</th>
+              <th>Tokens</th>
+              <th>Latency</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="log-rows">
+            <tr><td colspan="7" style="color:var(--text-3); text-align:center; padding: 20px;">Idle — Click "Start Workload" to begin continuous synthetic requests against local model.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <script src="branding.js"></script>
+  <script src="gpu.js"></script>
+</body>
+</html>

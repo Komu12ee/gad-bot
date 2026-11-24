@@ -1,0 +1,112 @@
+[
+  {
+    "doc_id": "doc_gad_transfer_2026",
+    "page_no": 1,
+    "file_path": "data/fg2/stage2/63dfd3acb3182dc5.md",
+    "ground_truth_text": "# छत्तीसगढ़ शासन, सामान्य प्रशासन विभाग, मंत्रालय\n## परिपत्र क्रमांक एफ 14-2/2026/1-3, नवा रायपुर अटल नगर\n\nविषय: राज्य एवं अधीनस्थ सेवाओं के अधिकारियों/कर्मचारियों हेतु स्थानांतरण नीति 2026-27।\n\nराज्य शासन एतद्द्वारा वर्ष 2026-27 हेतु स्थानांतरण नीति लागू करता है। अनुसूचित क्षेत्रों (बस्तर एवं सरगुजा संभाग) में पदस्थ शासकीय सेवकों की न्यूनतम पदावधि 3 वर्ष निर्धारित की जाती है।",
+    "language": "hi",
+    "has_table": false,
+    "gate_label": "good",
+    "gold_numbers": "[\"2026-27\", \"3\", \"14-2/2026/1-3\"]",
+    "gold_chunk_boundaries": "[\"# छत्तीसगढ़ शासन\", \"विषय: राज्य एवं\", \"राज्य शासन एतद्द्वारा\"]"
+  },
+  {
+    "doc_id": "doc_sas_civil_list_2026",
+    "page_no": 24,
+    "file_path": "data/fg2/stage2/63dfd3acb3182dc5.md",
+    "ground_truth_text": "| क्र. | अधिकारी का नाम | जन्म तिथि | गृह जिला | वर्तमान पदस्थापना |\n|---|---|---|---|---|\n| 442 | श्री अनुपम आशीष टोप्पो | 24.11.1987 | जशपुर | डिप्टी कलेक्टर रायपुर (पदभार 30.07.2025) एवं ओएसडी मंत्री वित्त विभाग (16.03.2026) |",
+    "language": "hi",
+    "has_table": true,
+    "gate_label": "good",
+    "gold_numbers": "[\"442\", \"24.11.1987\", \"30.07.2025\", \"16.03.2026\"]",
+    "gold_chunk_boundaries": "[\"| क्र. | अधिकारी का नाम\", \"| 442 | श्री अनुपम\"]"
+  },
+  {
+    "doc_id": "doc_finance_da_2025",
+    "page_no": 1,
+    "file_path": "data/fg2/stage2/efc290b78f6c8ad7.md",
+    "ground_truth_text": "विषय: सातवें वेतनमान में शासकीय सेवकों को महंगाई भत्ते (DA) की दर में 4% की वृद्धि बाबत।\n\nराज्य शासन द्वारा शासकीय सेवकों को दिनांक 01.07.2025 से 46% के स्थान पर 50% की दर से महंगाई भत्ता स्वीकृत किया जाता है। यह वृद्धि 1 जुलाई 2025 से नकद देय होगी।",
+    "language": "hi",
+    "has_table": false,
+    "gate_label": "good",
+    "gold_numbers": "[\"4%\", \"01.07.2025\", \"46%\", \"50%\", \"1 जुलाई 2025\"]",
+    "gold_chunk_boundaries": "[\"विषय: सातवें वेतनमान\", \"राज्य शासन द्वारा\"]"
+  },
+  {
+    "doc_id": "doc_ccl_women_rules",
+    "page_no": 2,
+    "file_path": "data/fg2/stage2/bab670ac612f4f79.md",
+    "ground_truth_text": "नियम 38-ग: महिला शासकीय सेवकों को संतान पालन अवकाश (Child Care Leave)।\nमहिला शासकीय सेवकों को उनकी संपूर्ण सेवाकाल में अधिकतम 730 दिनों का संतान पालन अवकाश दो ज्येष्ठतम जीवित संतानों के 18 वर्ष की आयु प्राप्त करने तक देय होगा।",
+    "language": "hi",
+    "has_table": false,
+    "gate_label": "good",
+    "gold_numbers": "[\"38-ग\", \"730\", \"18\"]",
+    "gold_chunk_boundaries": "[\"नियम 38-ग\", \"महिला शासकीय\"]"
+  },
+  {
+    "doc_id": "doc_vacancy_jmrc_2014",
+    "page_no": 1,
+    "file_path": "data/fg2/stage2/359fbfd517894655.md",
+    "ground_truth_text": "JAIPUR METRO RAIL CORPORATION LIMITED\nNotification No. F.1 (83)/JMRC/DCA/HR/SS-IV/2014-15/1076 D dated 16-06-2014.\nApplications are invited on deputation from officials of Central/State Govts for the post of General Manager with minimum 5 years experience in grade pay 7600.",
+    "language": "en",
+    "has_table": false,
+    "gate_label": "good",
+    "gold_numbers": "[\"1076\", \"16-06-2014\", \"5\", \"7600\"]",
+    "gold_chunk_boundaries": "[\"JAIPUR METRO\", \"Applications are invited\"]"
+  },
+  {
+    "doc_id": "doc_corrupt_scan_noise",
+    "page_no": 1,
+    "file_path": "data/fg2/stage2/corrupt_artifact_01.md",
+    "ground_truth_text": "~#*| { } ^^^ ::: BUSOPAR BUSOPAR ||| === ??? ~~~ 000000000000000000000000",
+    "language": "en",
+    "has_table": false,
+    "gate_label": "bad",
+    "gold_numbers": "[]",
+    "gold_chunk_boundaries": "[]"
+  },
+  {
+    "doc_id": "doc_chips_sdc_specs",
+    "page_no": 5,
+    "file_path": "data/fg2/stage2/5f369c50ead865ab.md",
+    "ground_truth_text": "Chhattisgarh Infotech Promotion Society (CHiPS)\nState Data Centre (SDC) Uptime Commitment:\n| Facility | SLA Target | Latency Guarantee |\n|---|---|---|\n| Core Hosting Infrastructure | 99.982% | < 5 ms |\n| WAN Link Redundancy | 99.90% | < 20 ms |",
+    "language": "en",
+    "has_table": true,
+    "gate_label": "good",
+    "gold_numbers": "[\"99.982%\", \"5\", \"99.90%\", \"20\"]",
+    "gold_chunk_boundaries": "[\"Chhattisgarh Infotech\", \"| Facility | SLA Target\"]"
+  },
+  {
+    "doc_id": "doc_compassionate_rules",
+    "page_no": 1,
+    "file_path": "data/fg2/stage2/18ee1d1997164968.md",
+    "ground_truth_text": "अनुकंपा नियुक्ति नियम 2024: शासकीय सेवक की सेवाकाल में मृत्यु होने पर आश्रित परिवार के एक सदस्य को अनुकंपा नियुक्ति की पात्रता होगी। आवेदन मृत्यु दिनांक से अधिकतम 45 दिवस के भीतर प्रस्तुत किया जाना आवश्यक है।",
+    "language": "hi",
+    "has_table": false,
+    "gate_label": "good",
+    "gold_numbers": "[\"2024\", \"45\"]",
+    "gold_chunk_boundaries": "[\"अनुकंपा नियुक्ति नियम\", \"आवेदन मृत्यु दिनांक\"]"
+  },
+  {
+    "doc_id": "doc_staff_selection_board",
+    "page_no": 1,
+    "file_path": "data/fg2/stage2/ecc05b64348b4c77.md",
+    "ground_truth_text": "क्रमांक RULE/297/2025-GAD-3 :: भारत के संविधान के अनुच्छेद 309 के परंतुक एवं छत्तीसगढ़ कर्मचारी चयन मण्डल अधिनियम, 2026 (क्रमांक 5 सन् 2026) की धारा 3 की उप-धारा (4) द्वारा प्रदत्त शक्तियों को प्रयोग में लाते हुए संशोधन अधिसूचित किया जाता है।",
+    "language": "hi",
+    "has_table": false,
+    "gate_label": "good",
+    "gold_numbers": "[\"RULE/297/2025-GAD-3\", \"309\", \"2026\", \"5\", \"3\", \"4\"]",
+    "gold_chunk_boundaries": "[\"क्रमांक RULE/297/2025-GAD-3\"]"
+  },
+  {
+    "doc_id": "doc_blurred_unusable_scan",
+    "page_no": 1,
+    "file_path": "data/fg2/stage2/blur_sample_02.md",
+    "ground_truth_text": "░▒▓█ █▓▒░ [Unreadable handwritten ink spread across document page 1] §¶†‡",
+    "language": "mixed",
+    "has_table": false,
+    "gate_label": "bad",
+    "gold_numbers": "[]",
+    "gold_chunk_boundaries": "[]"
+  }
+]

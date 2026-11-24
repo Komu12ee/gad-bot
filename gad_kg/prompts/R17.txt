@@ -1,0 +1,6 @@
+TASK: Check an answer against its sources. For each claim in the answer, decide whether the sources support it.
+ANSWER: {{answer}}
+SOURCES:
+{{cited_chunks}}
+List the claims that are NOT supported (wrong number, wrong date, wrong status, missing in sources).
+OUTPUT SCHEMA: {"unsupported_claims":[string,...],"verdict":"OK"|"HAS_UNSUPPORTED"}
