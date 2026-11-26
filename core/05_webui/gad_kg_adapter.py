@@ -49,6 +49,10 @@ def route_query_intent(query: str) -> str:
         _ROUTER_CACHE[q_norm] = "DOCUMENT"
         return "DOCUMENT"
 
+    if any(k in q_norm for k in ["list all collectors", "all collectors", "district collectors", "कलेक्टरों की सूची", "समस्त कलेक्टर", "former chief secretary", "chief secretary before", "पूर्व मुख्य सचिव"]):
+        _ROUTER_CACHE[q_norm] = "OFFICER"
+        return "OFFICER"
+
     prompt = (
         "You are an intent router for a Government Administration Department (GAD) AI assistant.\n"
         "Determine whether the user query is asking about:\n"
@@ -139,17 +143,33 @@ def linkify_document_citations(text: str, candidate_chunks: Optional[List[Dict[s
     index = load_document_metadata_index()
 
     cited_docs: Dict[str, Dict[str, Any]] = {}
-    pattern = re.compile(r"\[(?:D_)?([a-f0-9]{8,64})(?:#([A-Za-z0-9_]+))?\]")
+    single_cite_re = re.compile(r"(?<![A-Za-z0-9_])(?:D_([a-f0-9]{8,64})|([a-f0-9]{16,64}))(?:[#_]([A-Za-z0-9_]+))?(?![A-Za-z0-9_\.])")
+    bracket_cite_re = re.compile(r"\[([^\]]*(?:D_[a-f0-9]{8,64}|[a-f0-9]{16,64})[^\]]*)\](?!\s*\()")
 
-    def replace_citation(match):
-        raw_key = match.group(1)
+    def _format_cite_link(raw_key: str) -> str:
         meta = index.get(raw_key) or index.get(f"D_{raw_key}") or index.get(raw_key[:16]) or index.get(raw_key[:8]) or {}
         url = meta.get("source_url") or "https://gad.cg.gov.in/"
         filename = meta.get("original_name") or meta.get("filename") or f"{raw_key[:8]}.pdf"
         cited_docs[raw_key] = meta
         return f"[[📄 {filename}]]({url})"
 
-    transformed = pattern.sub(replace_citation, text)
+    def replace_citation_bracket(match):
+        inner = match.group(1)
+        if "📄" in inner:
+            return match.group(0)
+        keys = single_cite_re.findall(inner)
+        if not keys:
+            return match.group(0)
+        links = []
+        seen_local = set()
+        for k1, k2, _ in keys:
+            raw_key = k1 or k2
+            if raw_key and raw_key not in seen_local:
+                seen_local.add(raw_key)
+                links.append(_format_cite_link(raw_key))
+        return " ".join(links) if links else match.group(0)
+
+    transformed = bracket_cite_re.sub(replace_citation_bracket, text)
 
     def replace_paren_hex(match):
         hex_key = match.group(1)
@@ -161,7 +181,7 @@ def linkify_document_citations(text: str, candidate_chunks: Optional[List[Dict[s
             return f"([{filename}]({url}))"
         return match.group(0)
 
-    transformed = re.sub(r"\(([a-f0-9]{8,16})\)", replace_paren_hex, transformed)
+    transformed = re.sub(r"\((?:D_)?([a-f0-9]{16,64})(?:#[A-Za-z0-9_]+)?\)", replace_paren_hex, transformed)
 
     has_footer = "### 📑 प्रमाणिक स्त्रोत दस्तावेज़" in transformed
     if not has_footer:
@@ -203,8 +223,32 @@ def resolve_officer_query(q: str) -> Optional[Dict[str, Any]]:
     store = get_officer_store()
     q_low = q.lower()
     
-    # 1. Chief Secretary
+    # 1. Chief Secretary (handle both current and former/previous Chief Secretaries)
     if any(k in q_low for k in ["chief secretary", "मुख्य सचिव"]):
+        asks_former = any(
+            k in q_low
+            for k in ["before", "former", "previous", "preceded", "predecessor", "ex-", "पूर्व", "पहले", "पिछले"]
+        )
+        if asks_former and hasattr(store, "get_former_chief_secretaries"):
+            former_list = store.get_former_chief_secretaries()
+            cur_cs = store.get_chief_secretary()
+            if former_list:
+                immediate = former_list[0]
+                ans = "### पूर्व मुख्य सचिव (Former Chief Secretaries) - छत्तीसगढ़ शासन\n\n"
+                ans += f"वर्तमान मुख्य सचिव **{(cur_cs or {}).get('name_hi', 'श्री विकाश शील')} ({(cur_cs or {}).get('name_en', 'Shri Vikas Sheel')})** से पूर्व छत्तीसगढ़ शासन के मुख्य सचिव:\n\n"
+                for idx_f, fo in enumerate(former_list, 1):
+                    ans += f"{idx_f}. **{fo['name_hi']} ({fo['name_en']})** — {fo['designation_hi']}\n"
+                all_notifs = list(immediate.get("notifications") or [])
+                if all_notifs:
+                    ans += "\n#### संबंधित प्रमुख शासकीय अधिसूचनाएं एवं परिपत्र:\n"
+                    for n in all_notifs[:5]:
+                        ans += f"- **{n['order_no']}** ({n['order_date']}): {n['subject']}\n"
+                ans += format_officer_sources_footer(primary_doc=immediate, notifications=all_notifs)
+                return {
+                    "answer": ans,
+                    "source": "officer_store",
+                    "matched_officers": former_list,
+                }
         cs = store.get_chief_secretary()
         if cs:
             cs = store.get_officer(cs['id']) or cs
@@ -275,6 +319,36 @@ def resolve_officer_query(q: str) -> Optional[Dict[str, Any]]:
             "excerpt": "छत्तीसगढ़ शासन के समस्त विभागों के अपर मुख्य सचिव, प्रमुख सचिव व सचिव गणों की सूची।"
         }]
         return {"answer": ans, "officer": None, "chunks": chunks}
+
+    # 2b. List District Collectors
+    if any(k in q_low for k in ["list", "all", "सूची", "समस्त"]) and any(k in q_low for k in ["collector", "collectors", "कलेक्टर", "कलेक्टरों"]):
+        cols = store.get_collectors()
+        if cols:
+            ans = "### छत्तीसगढ़ के जिला कलेक्टरों की सूची (District Collectors of Chhattisgarh):\n\n"
+            ans += "| क्र. | जिला (District) | कलेक्टर का नाम (Collector Name) | ई-मेल (Email) |\n"
+            ans += "|---|---|---|---|\n"
+            for i, c in enumerate(cols, 1):
+                dist = c.get("department_hi") or c.get("department_en") or c.get("designation_hi") or "-"
+                ans += f"| {i} | {dist} | **{c.get('name_hi','')}** ({c.get('name_en','')}) | `{c.get('email','') or '-'}` |\n"
+            ans += f"\n*(कुल {len(cols)} जिला कलेक्टर राज्य सिविल लिस्ट डायरेक्टरी में दर्ज हैं।)*\n"
+            primary_meta = {
+                "source_title": "छत्तीसगढ़ शासन सिविल लिस्ट / कलेक्टर डायरेक्टरी",
+                "source_url": "https://gad.cg.gov.in/Display_civil_list_Email.aspx",
+                "source_doc_id": "efc290b78f6c8ad7",
+                "canonical_source_id": "cec78d786be946f4a6316afdf05854fd",
+                "filename": "Display_civil_list_Email.aspx",
+            }
+            ans += format_officer_sources_footer(primary_doc=primary_meta)
+            chunks = [{
+                "doc_id": "efc290b78f6c8ad7",
+                "canonical_doc_id": "cec78d786be946f4a6316afdf05854fd",
+                "source_url": "https://gad.cg.gov.in/Display_civil_list_Email.aspx",
+                "actual_pdf": "Display_civil_list_Email.aspx",
+                "label": "छत्तीसगढ़ शासन - जिला कलेक्टर डायरेक्टरी",
+                "body": f"छत्तीसगढ़ शासन जिला कलेक्टर सूची ({len(cols)} जिले)।",
+                "excerpt": "छत्तीसगढ़ शासन के समस्त जिला कलेक्टरों की आधिकारिक सूची।",
+            }]
+            return {"answer": ans, "officer": None, "chunks": chunks}
 
     # 3. Retired IAS
     if any(k in q_low for k in ["retired ias", "सेवानिवृत्त ias", "सेवानिवृत्त भा.प्र.से", "retired"]):

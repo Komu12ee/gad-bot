@@ -170,15 +170,16 @@ class TemporalGraphRetriever(BaseRetriever):
         with self.store._get_connection() as conn:
             cur = conn.cursor()
             for nm in node_matches:
-                d_id = nm["doc_id"]
-                if d_id not in seen_doc_ids:
+                d_dir = nm.get("doc_dir") or nm["doc_id"]
+                d_uuid = nm["doc_id"]
+                if d_dir not in seen_doc_ids and d_uuid not in seen_doc_ids:
                     cur.execute("""
                         SELECT chunk_id, doc_id, order_no, title, doc_date, status, content
                         FROM chunks
-                        WHERE doc_id = ?
+                        WHERE doc_id = ? OR canonical_doc_id = ?
                         ORDER BY chunk_index ASC
                         LIMIT 2;
-                    """, (d_id,))
+                    """, (d_dir, d_uuid))
                     for cr in cur.fetchall():
                         candidates.append(RetrievedChunk(
                             chunk_id=cr["chunk_id"],
@@ -191,7 +192,8 @@ class TemporalGraphRetriever(BaseRetriever):
                             score=0.5,  # high priority graph match
                             retrieval_source="graph_expansion"
                         ))
-                        seen_doc_ids.add(d_id)
+                        seen_doc_ids.add(cr["doc_id"])
+                        seen_doc_ids.add(d_uuid)
 
         # 3. Temporal Graph Traversal & History Resolution
         enriched_results: List[RetrievedChunk] = []
@@ -260,14 +262,15 @@ class TemporalGraphRetriever(BaseRetriever):
                     warnings.append(warn_msg)
 
                 # Pull the standing active order chunks if missing from results!
-                if standing_order and standing_order.get("doc_id") and standing_order["doc_id"] not in seen_doc_ids:
+                if standing_order and standing_order.get("doc_id") and standing_order["doc_id"] not in seen_doc_ids and standing_order.get("doc_dir") not in seen_doc_ids:
                     so_doc_id = standing_order["doc_id"]
+                    so_doc_dir = standing_order.get("doc_dir") or so_doc_id
                     with self.store._get_connection() as conn:
                         cur = conn.cursor()
                         cur.execute("""
                             SELECT chunk_id, doc_id, order_no, title, doc_date, status, content
-                            FROM chunks WHERE doc_id = ? LIMIT 1;
-                        """, (so_doc_id,))
+                            FROM chunks WHERE doc_id = ? OR canonical_doc_id = ? LIMIT 1;
+                        """, (so_doc_dir, so_doc_id))
                         so_row = cur.fetchone()
                         if so_row:
                             active_chunk = RetrievedChunk(

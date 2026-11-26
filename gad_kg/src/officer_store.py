@@ -1013,15 +1013,16 @@ class OfficerStore:
             norm_q = re.sub(pat, repl, norm_q)
 
         stopwords = {
-            "who", "is", "the", "of", "about", "abt", "tell", "me", "give", "list", 
+            "who", "is", "was", "were", "the", "of", "about", "abt", "tell", "me", "give", "list",
             "and", "or", "to", "all", "in", "shri", "smt", "dr", "mr", "mrs", "ms",
             "what", "are", "for", "from", "with", "at", "by", "on", "as", "an", "a",
             "this", "that", "these", "those", "how", "when", "where", "which", "why",
+            "before", "after", "former", "previous", "ex", "preceded", "predecessor",
             "kon", "hain", "hai", "kripya", "bataiye", "rules", "rule", "order", "document",
             "documents", "circular", "circulars", "details", "status",
-            "का", "के", "की", "में", "से", "को", "ने", "पर", "और", "या", "तथा", "एवं", 
+            "का", "के", "की", "में", "से", "को", "ने", "पर", "और", "या", "तथा", "एवं",
             "हेतु", "बाबत", "संबंधी", "बारे", "कौन", "हैं", "है", "था", "थी", "थे", "नियम",
-            "आदेश", "परिपत्र"
+            "आदेश", "परिपत्र", "पूर्व", "पहले", "पिछले", "रिटायर्ड",
         }
 
         common_surnames = {
@@ -1194,14 +1195,26 @@ class OfficerStore:
         conn.close()
         return rows
 
+    def get_collectors(self) -> List[Dict[str, Any]]:
+        conn = self._get_conn()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT * FROM officers
+            WHERE category = 'collectors'
+            ORDER BY department_en ASC, department_hi ASC, name_en ASC
+        """)
+        rows = [dict(r) for r in cur.fetchall()]
+        conn.close()
+        return rows
+
     def get_chief_secretary(self) -> Optional[Dict[str, Any]]:
         conn = self._get_conn()
         cur = conn.cursor()
         cur.execute("""
             SELECT * FROM officers 
             WHERE category = 'chief_secretary' 
-               OR designation_en LIKE '%Chief Secretary%' 
-               OR designation_hi LIKE '%मुख्य सचिव%'
+               OR (designation_en LIKE '%Chief Secretary%' AND status = 'active')
+               OR (designation_hi LIKE '%मुख्य सचिव%' AND status = 'active')
             LIMIT 1
         """)
         row = cur.fetchone()
@@ -1209,6 +1222,24 @@ class OfficerStore:
         if not row:
             return None
         return self.get_officer(row["id"])
+
+    def get_former_chief_secretaries(self) -> List[Dict[str, Any]]:
+        conn = self._get_conn()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id FROM officers
+            WHERE (designation_en LIKE '%Chief Secretary%' OR designation_hi LIKE '%मुख्य सचिव%')
+              AND (category = 'retired_ias' OR status = 'retired')
+            ORDER BY id ASC
+        """)
+        ids = [r["id"] for r in cur.fetchall()]
+        conn.close()
+        res = []
+        for oid in ids:
+            off = self.get_officer(oid)
+            if off:
+                res.append(off)
+        return res
 
     def get_chips_ceos(self) -> List[Dict[str, Any]]:
         conn = self._get_conn()

@@ -176,9 +176,11 @@ class TemporalGraphStore:
             cur.execute("SELECT * FROM nodes")
             nodes = cur.fetchall()
             for r in nodes:
+                r_keys = set(r.keys())
                 self.graph.add_node(
                     r["id"],
                     doc_id=r["doc_id"],
+                    doc_dir=(r["doc_dir"] if "doc_dir" in r_keys else "") or "",
                     node_type=r["node_type"],
                     label=r["label"],
                     order_no=r["order_no"] or "",
@@ -189,6 +191,8 @@ class TemporalGraphStore:
                     title_hi=r["title_hi"] or "",
                     title_en=r["title_en"] or "",
                     summary=r["summary"] or "",
+                    category=(r["category"] if "category" in r_keys else "") or "",
+                    category_id=(r["category_id"] if "category_id" in r_keys else "") or "",
                     chunk_count=r["chunk_count"] or 0,
                     source_url=r["source_url"] or ""
                 )
@@ -262,28 +266,45 @@ class TemporalGraphStore:
         target_data = dict(self.graph.nodes[node_id])
         target_data["full_ocr_text"] = self.get_document_full_ocr(node_id)
 
+        semantic_prev_rels = {
+            "SUPERSEDES", "AMENDS", "CONTINUES", "REFERENCES",
+            "DUPLICATE_OF", "CITES_RULEBOOK", "SAME_FILE_SERIES",
+            "LATEST_IN_SERIES", "RELATED_POLICY_TOPIC", "CHRONOLOGICAL_PREV",
+        }
+        semantic_next_rels = {
+            "SUPERSEDES", "AMENDS", "CONTINUES", "REFERENCES",
+            "DUPLICATE_OF", "CITES_RULEBOOK", "SAME_FILE_SERIES",
+            "LATEST_IN_SERIES", "RELATED_POLICY_TOPIC", "CHRONOLOGICAL_NEXT",
+        }
+
         # 1. Predecessors (Ancestors in history - what came before)
         # Edges like A -[SUPERSEDES/AMENDS]-> B mean A is newer, B is older.
         predecessors = []
         for src, dst, data in self.graph.out_edges(node_id, data=True):
-            if data.get("relation") in ("SUPERSEDES", "AMENDS", "REFERENCES", "CHRONOLOGICAL_PREV"):
+            rel = data.get("relation", "")
+            if rel in semantic_prev_rels:
                 if dst in self.graph:
                     p_data = dict(self.graph.nodes[dst])
                     p_data["node_id"] = dst
-                    p_data["relation_to_target"] = data.get("relation")
+                    p_data["relation_to_target"] = rel
                     p_data["evidence"] = data.get("evidence", "")
+                    p_data["weight"] = data.get("weight", 0.5)
                     predecessors.append(p_data)
+        predecessors.sort(key=lambda x: (x.get("relation_to_target") == "CHRONOLOGICAL_PREV", -float(x.get("weight") or 0)))
 
         # 2. Successors (Descendants in history - what came after / what superseded this)
         successors = []
         for src, dst, data in self.graph.in_edges(node_id, data=True):
-            if data.get("relation") in ("SUPERSEDES", "AMENDS", "REFERENCES", "CHRONOLOGICAL_NEXT"):
+            rel = data.get("relation", "")
+            if rel in semantic_next_rels:
                 if src in self.graph:
                     s_data = dict(self.graph.nodes[src])
                     s_data["node_id"] = src
-                    s_data["relation_from_successor"] = data.get("relation")
+                    s_data["relation_from_successor"] = rel
                     s_data["evidence"] = data.get("evidence", "")
+                    s_data["weight"] = data.get("weight", 0.5)
                     successors.append(s_data)
+        successors.sort(key=lambda x: (x.get("relation_from_successor") == "CHRONOLOGICAL_NEXT", -float(x.get("weight") or 0)))
 
         # 3. Build chronological lineage chain
         all_related_ids = {node_id}
@@ -323,14 +344,23 @@ class TemporalGraphStore:
         }
 
     def _resolve_node_id(self, key: str) -> Optional[str]:
-        """Resolves doc_id, order_no, or exact node_id to graph node key."""
-        if key in self.graph:
-            return key
-        # Check by doc_id
+        """Resolves doc_id, doc_dir, order_no, or exact node_id to graph node key."""
+        if not key:
+            return None
+        clean_k = str(key).strip()
+        if clean_k.startswith("D_") and "#" in clean_k:
+            clean_k = clean_k.split("#", 1)[0][2:]
+        elif clean_k.startswith("D_") and len(clean_k) >= 18:
+            clean_k = clean_k[2:]
+        if clean_k in self.graph:
+            return clean_k
+        if f"doc_{clean_k}" in self.graph:
+            return f"doc_{clean_k}"
+        # Check by doc_id, doc_dir, or order_no
         for nid, data in self.graph.nodes(data=True):
-            if data.get("doc_id") == key:
+            if data.get("doc_id") == clean_k or data.get("doc_dir") == clean_k:
                 return nid
-            if data.get("order_no") and data.get("order_no").strip().lower() == key.strip().lower():
+            if data.get("order_no") and data.get("order_no").strip().lower() == clean_k.lower():
                 return nid
         return None
 
@@ -586,13 +616,16 @@ class TemporalGraphStore:
                         """, (fts_expr,))
                         for row in cur.fetchall():
                             doc_hex = row["doc_id"]
-                            node_id = f"doc_{doc_hex}"
-                            if node_id not in results_map:
-                                cur.execute("SELECT * FROM nodes WHERE id = ?;", (node_id,))
-                                n_row = cur.fetchone()
-                                if n_row:
-                                    results_map[node_id] = {
-                                        "id": node_id,
+                            cur.execute(
+                                "SELECT * FROM nodes WHERE doc_dir = ? OR id = ? OR doc_id = ? LIMIT 1;",
+                                (doc_hex, f"doc_{doc_hex}", doc_hex),
+                            )
+                            n_row = cur.fetchone()
+                            if n_row:
+                                real_nid = n_row["id"]
+                                if real_nid not in results_map:
+                                    results_map[real_nid] = {
+                                        "id": real_nid,
                                         "order_no": n_row["order_no"] or n_row["label"] or "Order N/A",
                                         "doc_date": n_row["doc_date"] or "",
                                         "year": n_row["year"] or 0,

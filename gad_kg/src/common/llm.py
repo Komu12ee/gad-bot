@@ -162,7 +162,7 @@ def call_llm(
     last_error = None
     for attempt in range(min(retries, 2)):
         try:
-            with urllib.request.urlopen(req, timeout=12) as resp:
+            with urllib.request.urlopen(req, timeout=30) as resp:
                 resp_json = json.loads(resp.read().decode("utf-8"))
                 content = resp_json["choices"][0]["message"]["content"]
                 parsed = json.loads(content)
@@ -171,11 +171,13 @@ def call_llm(
                 return parsed
         except Exception as e:
             last_error = e
-            time.sleep(1.0 * (attempt + 1))
+            import sys
+            print(f"[call_llm] attempt {attempt + 1} failed ({schema_name}): {type(e).__name__}: {e}", file=sys.stderr)
+            time.sleep(0.8 * (attempt + 1))
 
     # Graceful fallback instead of raising fatal error
     if schema_name == "router_schema":
-        return {"route": "DOCUMENT"}
+        return {"route": "DOCUMENT", "_llm_fallback": True}
     elif schema_name == "r14_query":
         return {
             "language": "hi" if any('\u0900' <= ch <= '\u097F' for ch in prompt) else "en",
@@ -186,11 +188,14 @@ def call_llm(
             "queries_en": [],
             "queries_hi": [],
             "needs_table": False,
+            "_llm_fallback": True,
         }
     elif schema_name == "r16_ans":
         return {
-            "answer": "प्रासंगिक शासकीय परिपत्र एवं आदेश प्राप्त हुए हैं। विस्तृत संदर्भ एवं विवरण नीचे संलग्न हैं।",
+            "answer": "",
             "used_labels": [],
-            "answerable": True,
+            "answerable": False,
+            "_llm_fallback": True,
+            "_error": str(last_error or ""),
         }
-    return {}
+    return {"_llm_fallback": True}

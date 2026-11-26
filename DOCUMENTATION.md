@@ -1,7 +1,7 @@
 # GAD-BOT: Architecture & System Documentation
 
 > **General Administration Department (GAD) · Government of Chhattisgarh (`FG2` Module)**  
-> **Last Automated Update:** `2026-11-24 17:13:06`  
+> **Last Automated Update:** `2026-11-26 10:20:34`  
 > **Documentation Engine:** `scripts/update_docs.py` (Auto-updated on startup / on demand)
 
 ---
@@ -132,7 +132,7 @@ The active data directory is `data/fg2/`. All processed assets are preserved:
 
 | Directory / File | Description | Metrics |
 |---|---|---|
-| `data/fg2/temporal_graph.db` | SQLite database storing nodes, edges, chunks, and FTS5 search | **5305 nodes, 10677 edges, 58064 chunks** |
+| `data/fg2/temporal_graph.db` | SQLite database storing nodes, edges, chunks, and FTS5 search | **5305 nodes, 16815 edges, 58064 chunks** |
 | `data/fg2/chunks/` | Semantic passages created by chunk builder v2 | **5305 doc folders, ~0 files** |
 | `data/fg2/stage2/` | OCR Markdown (`structured.md`) extracted by VLM OCR | **13429 OCR artifacts** |
 | `data/fg2/scrape_raw/` | Source PDF snapshots and scraped web files | **5323 raw files** |
@@ -182,21 +182,21 @@ To avoid chaotic unclustered rendering and allow hierarchical navigation, all 5,
 
 | Category ID | Governance Domain Name | Document Count |
 |---|---|---|
-| `recruitment` | भर्ती व सेवा नियम (Recruitment & Rules) | **1605** |
-| `finance` | बजट व वित्तीय स्वीकृतियां (Budget & Finance) | **633** |
-| `training` | प्रशिक्षण व प्रशासनिक क्षमता (Training & Capacity) | **591** |
-| `vigilance` | विभागीय जांच व अनुशासन (Discipline & Vigilance) | **394** |
-| `transfer` | स्थानांतरण व पदस्थापना (Transfer & Postings) | **344** |
-| `general` | सामान्य प्रशासनिक परिपत्र (General Circulars) | **249** |
-| `compassionate` | अनुकंपा नियुक्ति (Compassionate Appointment) | **216** |
-| `leave` | अवकाश व कार्यदिवस (Leave & Holidays) | **207** |
-| `reservation` | आरक्षण रोस्टर व विशेष वर्ग (Reservation & Roster) | **207** |
-| `schemes` | शासकीय योजनाएं व अनुदान (Schemes & Grants) | **201** |
-| `elections` | निर्वाचन व आचार संहिता (Elections & Model Code) | **165** |
-| `promotion` | पदोन्नति व वरिष्ठता (Promotion & Seniority) | **156** |
-| `pension` | वेतन, पेंशन व भत्ते (Pay, Pension & Allowances) | **153** |
-| `cadre` | प्रशासनिक संगठन व संवर्ग (Cadre & Organization) | **114** |
-| `rti` | सूचना का अधिकार व जन शिकायत (RTI & Grievances) | **70** |
+| `schemes` | शासकीय योजनाएं व अनुदान (Schemes & Grants) | **922** |
+| `recruitment` | भर्ती व सेवा नियम (Recruitment & Rules) | **857** |
+| `training` | प्रशिक्षण व प्रशासनिक क्षमता (Training & Capacity) | **613** |
+| `transfer` | स्थानांतरण व पदस्थापना (Transfer & Postings) | **546** |
+| `promotion` | पदोन्नति व वरिष्ठता (Promotion & Seniority) | **426** |
+| `rti` | सूचना का अधिकार व जन शिकायत (RTI & Grievances) | **351** |
+| `compassionate` | अनुकंपा नियुक्ति (Compassionate Appointment) | **213** |
+| `pension` | वेतन, पेंशन व भत्ते (Pay, Pension & Allowances) | **211** |
+| `reservation` | आरक्षण रोस्टर व विशेष वर्ग (Reservation & Roster) | **210** |
+| `vigilance` | विभागीय जांच व अनुशासन (Discipline & Vigilance) | **187** |
+| `cadre` | प्रशासनिक संगठन व संवर्ग (Cadre & Organization) | **184** |
+| `elections` | निर्वाचन व आचार संहिता (Elections & Model Code) | **174** |
+| `finance` | बजट व वित्तीय स्वीकृतियां (Budget & Finance) | **164** |
+| `leave` | अवकाश व कार्यदिवस (Leave & Holidays) | **135** |
+| `general` | सामान्य प्रशासनिक परिपत्र (General Circulars) | **112** |
 
 ### Graph Traversal Engine (`graph_store.py`)
 ```python
@@ -327,13 +327,13 @@ python scripts/update_docs.py
 
 ## 11. Live System Telemetry & Status
 
-*(Automatically generated at `2026-11-24 17:13:06`)*
+*(Automatically generated at `2026-11-26 10:20:34`)*
 
 | Component | Status | Metrics / Details |
 |---|---|---|
-| **Node.js Web UI Server** | `🟢 Active` | Listening on port `3003` |
-| **Flask RAG Backend** | `🟢 Active` | Listening on port `5003` |
-| **Temporal Graph DB** | `🟢 Ready` | **5305** nodes · **10677** edges · **58064** chunks |
+| **Node.js Web UI Server** | `🔴 Inactive` | Listening on port `3003` |
+| **Flask RAG Backend** | `🔴 Inactive` | Listening on port `5003` |
+| **Temporal Graph DB** | `🟢 Ready` | **5305** nodes · **16815** edges · **58064** chunks |
 | **Officer Knowledge Store** | `🟢 Active` | **744** verified officers · **1720** linked circular notifications |
 | **Active Standing Orders** | `🟢 In Effect` | **4924** active circulars |
 | **Amended Orders** | `🟡 Modified` | **95** amended circulars |

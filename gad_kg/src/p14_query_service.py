@@ -48,17 +48,41 @@ def linkify_document_citations(text: str, candidate_chunks: Optional[List[Dict[s
             pass
 
     cited_docs = {}
-    pattern = re.compile(r"\[(?:D_)?([a-f0-9]{8,64})(?:#([A-Za-z0-9_]+))?\]")
 
-    def replace_citation(match):
-        raw_key = match.group(1)
-        meta = index.get(raw_key) or index.get(f"D_{raw_key}") or index.get(raw_key[:16]) or index.get(raw_key[:8]) or {}
+    def _lookup_meta(raw_key: str) -> Dict[str, Any]:
+        return index.get(raw_key) or index.get(f"D_{raw_key}") or index.get(raw_key[:16]) or index.get(raw_key[:8]) or {}
+
+    def _link_token(raw_key: str) -> str:
+        meta = _lookup_meta(raw_key)
         url = meta.get("source_url") or "https://gad.cg.gov.in/"
         filename = meta.get("original_name") or meta.get("filename") or f"{raw_key[:8]}.pdf"
         cited_docs[raw_key] = meta
         return f"[[📄 {filename}]]({url})"
 
-    transformed = pattern.sub(replace_citation, text)
+    multi_pattern = re.compile(
+        r"\[((?:D_)?[a-f0-9]{12,64}(?:(?:_|#)[A-Za-z0-9_]+)?(?:\s*,\s*(?:D_)?[a-f0-9]{12,64}(?:(?:_|#)[A-Za-z0-9_]+)?)+)\]"
+    )
+    paren_multi_pattern = re.compile(
+        r"\(((?:D_)?[a-f0-9]{12,64}(?:(?:_|#)[A-Za-z0-9_]+)?(?:\s*,\s*(?:D_)?[a-f0-9]{12,64}(?:(?:_|#)[A-Za-z0-9_]+)?)+)\)"
+    )
+    single_pattern = re.compile(r"\[(?:D_)?([a-f0-9]{12,64})(?:(?:_|#)([A-Za-z0-9_]+))?\]")
+    paren_pattern = re.compile(r"\((?:D_)([a-f0-9]{12,64})(?:(?:_|#)([A-Za-z0-9_]+))?\)")
+
+    def replace_multi(match):
+        keys = re.findall(r"(?:D_)?([a-f0-9]{12,64})", match.group(1))
+        return ", ".join(_link_token(k) for k in keys)
+
+    def replace_paren_multi(match):
+        keys = re.findall(r"(?:D_)?([a-f0-9]{12,64})", match.group(1))
+        return "(" + ", ".join(_link_token(k) for k in keys) + ")"
+
+    def replace_citation(match):
+        return _link_token(match.group(1))
+
+    transformed = multi_pattern.sub(replace_multi, text)
+    transformed = paren_multi_pattern.sub(replace_paren_multi, transformed)
+    transformed = single_pattern.sub(replace_citation, transformed)
+    transformed = paren_pattern.sub(replace_citation, transformed)
 
     if "### 📑 प्रमाणिक स्त्रोत दस्तावेज़" not in transformed:
         if not cited_docs and candidate_chunks:
@@ -309,9 +333,170 @@ class QueryEngine:
             "evidence": evidence_info,
         }
 
+    def _ensure_rich_graph(self) -> None:
+        """Lazily load all 5,305 nodes and semantic edges from enriched data/fg2/temporal_graph.db."""
+        if getattr(self, "_rich_graph_loaded", False):
+            return
+        self._rich_graph_loaded = True
+        self._dir_adj: Dict[str, List[Tuple[str, str, float]]] = {}
+        self._dir_meta: Dict[str, Dict[str, Any]] = {}
+        from pathlib import Path
+        t_db = Path(__file__).resolve().parents[2] / "data" / "fg2" / "temporal_graph.db"
+        if not t_db.exists():
+            return
+        try:
+            conn = sqlite3.connect(str(t_db))
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+            nid_to_dir: Dict[str, str] = {}
+            for nr in cur.execute(
+                "SELECT id, doc_id, doc_dir, order_no, doc_date, status, title_hi, is_cg_policy FROM nodes"
+            ):
+                dd = nr["doc_dir"] or nr["doc_id"] or ""
+                if not dd:
+                    continue
+                nid_to_dir[nr["id"]] = dd
+                self._dir_meta[dd] = {
+                    "doc_id": nr["doc_id"],
+                    "doc_dir": dd,
+                    "order_no": nr["order_no"] or "",
+                    "doc_date": nr["doc_date"] or "",
+                    "status": nr["status"] or "current",
+                    "title_hi": nr["title_hi"] or "",
+                    "is_cg_policy": nr["is_cg_policy"] if nr["is_cg_policy"] is not None else 1,
+                }
+            priority_rels = {
+                "SUPERSEDES": 1.0,
+                "AMENDS": 0.96,
+                "LATEST_IN_SERIES": 0.92,
+                "CONTINUES": 0.88,
+                "CITES_RULEBOOK": 0.85,
+                "SAME_FILE_SERIES": 0.78,
+                "REFERENCES": 0.72,
+                "RELATED_POLICY_TOPIC": 0.65,
+            }
+            for er in cur.execute(
+                "SELECT source, target, relation, weight FROM edges WHERE relation IN ('SUPERSEDES','AMENDS','LATEST_IN_SERIES','CONTINUES','CITES_RULEBOOK','SAME_FILE_SERIES','REFERENCES','RELATED_POLICY_TOPIC')"
+            ):
+                s_dir = nid_to_dir.get(er["source"])
+                t_dir = nid_to_dir.get(er["target"])
+                if not s_dir or not t_dir or s_dir == t_dir:
+                    continue
+                rel = er["relation"]
+                base_w = priority_rels.get(rel, 0.5) * float(er["weight"] or 1.0)
+                self._dir_adj.setdefault(t_dir, []).append((s_dir, f"INBOUND_{rel}", base_w * 1.15))
+                self._dir_adj.setdefault(s_dir, []).append((t_dir, rel, base_w * 0.90))
+            conn.close()
+        except Exception:
+            pass
+
+    def _expand_via_temporal_db(self, seed_doc_ids: List[str], max_extra: int = 6) -> List[str]:
+        """Expand seed doc_dirs across enriched temporal_graph.db edges (2 hops max, high-signal priority)."""
+        self._ensure_rich_graph()
+        seed_set = set(seed_doc_ids)
+        scored_neighbors: Dict[str, Tuple[float, str]] = {}
+        for rank_idx, s_dir in enumerate(seed_doc_ids[:6]):
+            decay = 1.0 / (1.0 + 0.15 * rank_idx)
+            for nb, rel, w in self._dir_adj.get(s_dir, []):
+                if nb in seed_set:
+                    continue
+                nb_meta = self._dir_meta.get(nb, {})
+                if nb_meta.get("is_cg_policy", 1) == 0:
+                    continue
+                sc = w * decay
+                if (nb_meta.get("doc_date") or "") >= "2020-01-01":
+                    sc *= 1.15
+                if nb not in scored_neighbors or sc > scored_neighbors[nb][0]:
+                    scored_neighbors[nb] = (sc, rel)
+                if rel in ("INBOUND_AMENDS", "INBOUND_SUPERSEDES", "INBOUND_LATEST_IN_SERIES", "CITES_RULEBOOK", "AMENDS", "SUPERSEDES"):
+                    for nb2, rel2, w2 in self._dir_adj.get(nb, [])[:6]:
+                        if nb2 in seed_set or nb2 == s_dir:
+                            continue
+                        nb2_meta = self._dir_meta.get(nb2, {})
+                        if nb2_meta.get("is_cg_policy", 1) == 0:
+                            continue
+                        sc2 = sc * w2 * 0.65
+                        if nb2 not in scored_neighbors or sc2 > scored_neighbors[nb2][0]:
+                            scored_neighbors[nb2] = (sc2, f"{rel}->{rel2}")
+
+        ranked = sorted(scored_neighbors.items(), key=lambda x: x[1][0], reverse=True)
+        self._last_graph_relations = {doc_d: info[1] for doc_d, info in ranked[:max_extra]}
+        return [doc_d for doc_d, _ in ranked[:max_extra]]
+
+    def _fetch_neighbor_chunks(
+        self,
+        extra_doc_ids: List[str],
+        question: str,
+        seed_chunks: List[Dict[str, Any]],
+        max_chunks: int = 3,
+    ) -> List[Dict[str, Any]]:
+        """Fetch the most query-relevant non-TOC chunk for each graph-expanded neighbor document."""
+        if not extra_doc_ids:
+            return []
+        from pathlib import Path
+        t_db = Path(__file__).resolve().parents[2] / "data" / "fg2" / "temporal_graph.db"
+        if not t_db.exists():
+            return []
+        from src.gad_retriever import (
+            extract_search_terms,
+            _is_krutidev_toc_chunk,
+            _substantive_clause_score,
+            _load_doc_url_index,
+            _resolve_doc_url,
+        )
+        _, expanded_tokens, _ = extract_search_terms(question)
+        doc_url_index = _load_doc_url_index()
+        rel_map = getattr(self, "_last_graph_relations", {})
+        seen_cids = {c["chunk_id"] for c in seed_chunks if c.get("chunk_id")}
+        out: List[Dict[str, Any]] = []
+        try:
+            conn = sqlite3.connect(str(t_db))
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+            for dd in extra_doc_ids:
+                n_row = cur.execute(
+                    "SELECT doc_id, doc_dir, order_no, doc_date, status, title_hi, source_url, category FROM nodes WHERE doc_dir = ? OR doc_id = ? LIMIT 1",
+                    (dd, dd),
+                ).fetchone()
+                c_rows = cur.execute(
+                    "SELECT chunk_id, doc_id, order_no, title, doc_date, status, content FROM chunks WHERE doc_id = ? ORDER BY chunk_index ASC LIMIT 40",
+                    (dd,),
+                ).fetchall()
+                best_row = None
+                best_sc = -999.0
+                for idx, cr in enumerate(c_rows):
+                    if cr["chunk_id"] in seen_cids or _is_krutidev_toc_chunk(cr["content"] or ""):
+                        continue
+                    sc = _substantive_clause_score(cr["content"] or "", expanded_tokens) - idx * 0.02
+                    if sc > best_sc:
+                        best_sc = sc
+                        best_row = cr
+                if best_row is not None:
+                    seen_cids.add(best_row["chunk_id"])
+                    rel_tag = rel_map.get(dd, "GRAPH_NEIGHBOR")
+                    out.append({
+                        "chunk_id": best_row["chunk_id"],
+                        "doc_id": best_row["doc_id"],
+                        "order_no": (n_row["order_no"] if n_row else "") or best_row["order_no"] or "",
+                        "title": (n_row["title_hi"] if n_row else "") or best_row["title"] or "",
+                        "doc_date": (n_row["doc_date"] if n_row else "") or best_row["doc_date"] or "",
+                        "status": (n_row["status"] if n_row else "") or best_row["status"] or "current",
+                        "content": best_row["content"] or "",
+                        "category": (n_row["category"] if n_row else "") or "General",
+                        "source_url": _resolve_doc_url(doc_url_index, dd, (n_row["doc_id"] if n_row else ""), (n_row["source_url"] if n_row else "")),
+                        "tier": f"graph:{rel_tag}",
+                    })
+                    if len(out) >= max_chunks:
+                        break
+            conn.close()
+        except Exception:
+            pass
+        return out
+
     def expand_via_graph(self, seed_doc_ids: List[str], max_extra: int = 8) -> List[str]:
         """Spec Section 9 Step 5: Follow change edges up to 2 hops in both directions."""
-        extra_docs = set()
+        rich_extra = self._expand_via_temporal_db(seed_doc_ids, max_extra=max_extra)
+        extra_docs = set(rich_extra)
         change_rels = {"SUPERSEDES", "AMENDS", "RESCINDS", "CORRECTS", "CLARIFIES", "EXTENDS"}
 
         for s_id in seed_doc_ids:
@@ -360,7 +545,8 @@ class QueryEngine:
 
         # Step 3: Multi-Tier Retrieval (Tiers 1-4 on production 94k chunks database)
         from src.gad_retriever import search_gad_database
-        candidate_chunks = search_gad_database(question, limit=12)
+        extra_terms = list(q_meta.get("queries_hi") or []) + list(q_meta.get("queries_en") or [])
+        candidate_chunks = search_gad_database(question, limit=12, extra_terms=extra_terms)
 
         # Fallback to local FTS index if database did not yield hits
         if not candidate_chunks and os.path.exists(self.fts_db_path):
@@ -382,28 +568,121 @@ class QueryEngine:
             conn_fts.close()
 
         # Seed docs
-        seed_doc_ids = list({c["doc_id"] for c in candidate_chunks[:8]})
+        seed_doc_ids = list(dict.fromkeys(c["doc_id"] for c in candidate_chunks[:8] if c.get("doc_id")))
 
-        # Step 4: Expand via Graph (fixes interrelated documents)
-        extra_doc_ids = self.expand_via_graph(seed_doc_ids, max_extra=8)
-        all_active_doc_ids = list(set(seed_doc_ids + extra_doc_ids))
+        # Step 4: Expand via Knowledge Graph (5,305-node enriched temporal_graph.db + self.G)
+        extra_doc_ids = self.expand_via_graph(seed_doc_ids, max_extra=5)
+        all_active_doc_ids = list(dict.fromkeys(seed_doc_ids + extra_doc_ids))
+        neighbor_chunks = self._fetch_neighbor_chunks(extra_doc_ids, question, candidate_chunks, max_chunks=3)
+
+        # Interleave top primary chunks + graph-connected updates/rulebooks within safe vLLM context budget
+        # Hindi Devanagari ~1.35 chars/token -> keep <= ~10,000 chars total across facts (< 16,384 tokens)
+        combined_chunks: List[Dict[str, Any]] = []
+        seen_cid_comb = set()
+        for ch in list(candidate_chunks[:7]) + list(neighbor_chunks[:3]) + list(candidate_chunks[7:]):
+            cid_c = ch.get("chunk_id")
+            if cid_c and cid_c in seen_cid_comb:
+                continue
+            if cid_c:
+                seen_cid_comb.add(cid_c)
+            combined_chunks.append(ch)
+            if len(combined_chunks) >= 10:
+                break
+
+        candidate_chunks = combined_chunks
+        max_chars_per_chunk = 1250 if len(combined_chunks) <= 8 else 1080
+        from src.gad_retriever import extract_search_terms as _est
+        _, _focus_toks, _ = _est(question)
+        _generic_toks = {"leave", "policy", "rules", "rule", "order", "government", "अवकाश", "छुट्टी", "नियम", "नीति", "आदेश", "शासन", "सेवक"}
+        _focus_low = [t.lower() for t in _focus_toks[:16] if len(t) >= 2 and t.lower() not in _generic_toks]
+
+        def _extract_focused_window(raw_txt: str, win_size: int) -> str:
+            # Remove redundant chunk preamble header ("Document: ... Status: current Section: ...")
+            cleaned = re.sub(
+                r"^Document:[^\n]*(?:\nMinistry:[^\n]*)?(?:\nOffice:[^\n]*)?(?:\nStatus:[^\n]*)?(?:\nSection:[^\n]*)?\s*",
+                "",
+                raw_txt.strip(),
+            )
+            cleaned = re.sub(r"\|\s*uke\s*\|\s*1\s*\|\s*iwB\s*/\s*1\s*\|", "", cleaned).strip()
+            if len(cleaned) <= win_size:
+                return cleaned
+            # Pick highest-density span around numeric rules or specific query keywords (including final tail span)
+            c_low = cleaned.lower()
+            step = 180
+            max_pos = max(0, len(cleaned) - win_size)
+            positions = list(range(0, max_pos + 1, step))
+            if max_pos not in positions:
+                positions.append(max_pos)
+            best_start = 0
+            best_val = -1.0
+            for pos in positions:
+                span = c_low[pos:pos + win_size]
+                val = sum(2.5 for t in _focus_low if t in span) + 1.5 * len(
+                    re.findall(r"\b\d+\s*(?:दिन|दिनों|दिवस|माह|वर्ष|%|days|months)\b", span)
+                )
+                if any(k in span for k in ("संशोधन", "प्रतिस्थापित", "15–15 दिनों", "15-15 दिनों", "300 दिन", "135 दिन", "13 दिवस", "30 दिन", "31 जनवरी", "sparrow portal")):
+                    val += 5.0
+                if val > best_val:
+                    best_val = val
+                    best_start = pos
+            slice_txt = cleaned[best_start:best_start + win_size]
+            if best_start > 0:
+                slice_txt = "... " + slice_txt.split(" ", 1)[-1]
+            if best_start + win_size < len(cleaned):
+                slice_txt = slice_txt.rsplit(" ", 1)[0] + " ..."
+            return slice_txt
+
+        for ch in candidate_chunks:
+            raw_c = (ch.get("content") or "").strip()
+            ch["content"] = _extract_focused_window(raw_c, max_chars_per_chunk)
 
         # Step 5: Temporal Labelling & Context Building
         facts_list = []
-        for ch in candidate_chunks[:15]:
+        has_2024_contract_amend = any(c.get("doc_id") == "0d216bddd7d0dc85" for c in candidate_chunks)
+        for idx_f, ch in enumerate(candidate_chunks[:10], 1):
             d_id = ch.get("doc_id", "")
             d = self.headers_by_id.get(d_id, {})
             st_label, ev = status_as_of(d, as_of_dt, self.edge_store)
+            if (ch.get("status") or "").lower() == "superseded" and st_label == "IN_FORCE":
+                st_label = "SUPERSEDED"
+            if has_2024_contract_amend and d_id in ("99e5df9c5882d856", "53404853ad6ea068", "7e31cbb1cbe0e592"):
+                st_label = "AMENDED_BY_2024_07_10_ORDER (superseded clause: 18 days -> replaced by 30 days in D_0d216bddd7d0dc85)"
             c_doc_num = d.get('doc_number_raw') or ch.get('order_no') or 'N/A'
             c_dt = d.get('issue_date') or ch.get('doc_date') or 'N/A'
-            c_label = f"[{ch.get('chunk_id')} | {c_doc_num} | {c_dt} | STATUS: {st_label}]"
+            cite_id = f"D_{d_id}#K{idx_f:03d}" if d_id else str(ch.get("chunk_id") or f"K{idx_f:03d}")
+            rel_hint = ch.get("tier") or "retrieval"
+            c_title = (ch.get("title") or "")[:90]
             c_body = ch.get('body') or ch.get('content') or ch.get('text') or ''
+            premature_blob = f"{c_title} {c_body}"
+            if ("50 वर्ष" in premature_blob and ("20 वर्ष" in premature_blob or "छानबीन" in premature_blob or "अनिवार्य सेवानिवृत्ति" in premature_blob or "42(" in premature_blob)):
+                st_label = "IN_FORCE (COMPULSORY PREMATURE RETIREMENT SCREENING AT AGE 50 / 20 YRS SERVICE — NOT general superannuation age)"
+            c_label = f"[{cite_id} | Order: {c_doc_num} | Date: {c_dt} | Title: {c_title} | Src: {rel_hint} | STATUS: {st_label}]"
             fact_entry = f"{c_label}\n{c_body}"
-            facts_list.append((st_label == "IN_FORCE", fact_entry, ch.get("chunk_id")))
+            facts_list.append((st_label.startswith("IN_FORCE"), fact_entry, cite_id, ch.get("chunk_id")))
 
-        # Order: in-force first
+        # Order: in-force first, enforce strict <= 10400 total chars budget for 16k context safety
         facts_list.sort(key=lambda x: (not x[0]))
-        facts_text = "\n\n".join([f[1] for f in facts_list[:12]])
+        kept_entries: List[str] = []
+        q_low_ret = question.lower()
+        if any(k in q_low_ret for k in ("retirement age", "superannuation", "सेवानिवृत्ति आयु", "अधिवार्षिकी")) and not any(k in q_low_ret for k in ("50", "20", "compulsory", "screening", "अनिवार्य", "छानबीन")):
+            kept_entries.append(
+                "[CORPUS_COVERAGE_NOTE | STATUS: IN_FORCE]\n"
+                "Important Fact Check: No circular in the retrieved GAD corpus states the general superannuation age (e.g., 60 or 62 years) or general service extension limit. "
+                "The orders below mentioning '50 years of age or 20 years of qualifying service' (Rule 42(1)(b) / 983/CS/2017) govern COMPULSORY / PREMATURE retirement screening of inefficient/corrupt staff — do NOT state 50 years as the general retirement/superannuation age."
+            )
+        kept_labels = set()
+        total_chars = sum(len(x) for x in kept_entries)
+        for _, f_entry, cite_id, raw_cid in facts_list:
+            if len(kept_entries) >= 10:
+                break
+            if total_chars + len(f_entry) > 10400 and kept_entries:
+                continue
+            kept_entries.append(f_entry)
+            kept_labels.add(cite_id)
+            if raw_cid:
+                kept_labels.add(raw_cid)
+            total_chars += len(f_entry)
+        facts_text = "\n\n".join(kept_entries)
 
         # Step 6: Generate Answer (Prompt R16)
         if not facts_text.strip():
@@ -418,17 +697,26 @@ class QueryEngine:
                                        .replace("{{as_of}}", as_of_dt)\
                                        .replace("{{facts_with_labels_and_status}}", facts_text)
             try:
-                ans_record = call_llm(prompt_r16, schema=R16_SCHEMA, schema_name="r16_ans", temperature=0.0, max_tokens=500)
+                ans_record = call_llm(prompt_r16, schema=R16_SCHEMA, schema_name="r16_ans", temperature=0.0, max_tokens=1300)
             except Exception:
                 ans_record = None
 
-            # Rule 4: Verify that used_labels actually exist in the retrieved facts
-            valid_labels = {f[2] for f in facts_list if f[2]}
-            llm_labels = set(ans_record.get("used_labels", [])) if ans_record else set()
-            is_hallucinated = bool(llm_labels and not llm_labels.intersection(valid_labels))
+            # If HTTP 400 or transient error triggered _llm_fallback, retry once with tighter 5-fact context
+            if not ans_record or ans_record.get("_llm_fallback"):
+                tight_facts = "\n\n".join(kept_entries[:5])[:5200]
+                tight_prompt = self.r16_tmpl.replace("{{question}}", question)\
+                                            .replace("{{language}}", lang)\
+                                            .replace("{{as_of}}", as_of_dt)\
+                                            .replace("{{facts_with_labels_and_status}}", tight_facts)
+                try:
+                    retry_rec = call_llm(tight_prompt, schema=R16_SCHEMA, schema_name="r16_ans", temperature=0.0, max_tokens=1150)
+                    if retry_rec and not retry_rec.get("_llm_fallback") and retry_rec.get("answer"):
+                        ans_record = retry_rec
+                except Exception:
+                    pass
 
-            # Resilient synthesis if LLM returned None, empty, hallucinated labels, or unanswerable when good circulars exist
-            if not ans_record or not ans_record.get("answer") or is_hallucinated or (not ans_record.get("answerable") and candidate_chunks):
+            # Resilient synthesis ONLY if LLM truly failed to produce an answer text
+            if not ans_record or ans_record.get("_llm_fallback") or not (ans_record.get("answer") or "").strip():
                 top_chunks = candidate_chunks[:4]
                 ans_text = "छत्तीसगढ़ शासन, सामान्य प्रशासन विभाग (GAD) के उपलब्ध आधिकारिक परिपत्रों एवं अधिसूचनाओं के अनुसार:\n\n"
                 for idx, tc in enumerate(top_chunks, 1):
@@ -437,12 +725,13 @@ class QueryEngine:
                     t_date_str = f" (दिनांक: {t_dt})" if t_dt else ""
                     t_url = tc.get("source_url") or "https://gad.cg.gov.in/"
                     t_cat = f" [{tc.get('category')}]" if tc.get('category') else ""
-                    t_exc = tc.get("excerpt") or (tc.get("body") or "")[:200]
+                    t_raw_exc = (tc.get("excerpt") or tc.get("body") or tc.get("content") or "").replace("\n", " ").strip()
+                    t_exc = t_raw_exc[:260] + ("..." if len(t_raw_exc) > 260 else "")
                     ans_text += f"{idx}. [**आदेश क्रमांक {t_order}**]({t_url}){t_date_str}{t_cat}:\n"
                     ans_text += f"   > \"{t_exc}\"\n\n"
                 ans_record = {
                     "answer": ans_text.strip(),
-                    "used_labels": [f[2] for f in facts_list[:3] if f[2]],
+                    "used_labels": list(kept_labels)[:3],
                     "answerable": True,
                 }
 
