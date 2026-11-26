@@ -481,7 +481,14 @@ def search_gad_database(
         node_cache[doc_dir] = d
         return d
 
-    def _record_chunk(row_obj: Any, rank: int, arm_weight: float, tier_name: str, extra_boost: float = 0.0) -> None:
+    def _record_chunk(
+        row_obj: Any,
+        rank: int,
+        arm_weight: float,
+        tier_name: str,
+        extra_boost: float = 0.0,
+        vec_sim: Optional[float] = None,
+    ) -> None:
         r = dict(row_obj)
         cid = r["chunk_id"]
         doc_dir = r["doc_id"]
@@ -507,6 +514,10 @@ def search_gad_database(
                 ),
                 "tier": tier_name,
             }
+        elif vec_sim is not None and "semantic_vector" not in chunk_rows[cid].get("tier", ""):
+            chunk_rows[cid]["tier"] = f"{chunk_rows[cid]['tier']}+semantic_vector"
+        if vec_sim is not None:
+            chunk_rows[cid]["vec_sim"] = max(float(chunk_rows[cid].get("vec_sim") or 0.0), float(vec_sim))
         rrf_val = arm_weight / (35.0 + rank) + extra_boost
         rrf_scores[cid] = rrf_scores.get(cid, 0.0) + rrf_val
 
@@ -714,6 +725,53 @@ def search_gad_database(
             for ch_rank, ch in enumerate(anchor_chs):
                 _record_chunk(ch, ch_rank + 1, 1.45, "policy_anchor", extra_boost=0.015)
 
+    # ── Arm 5: Dense Vector Semantic Search (BAAI/bge-m3, 1024-d) ───────────────
+    try:
+        from src.semantic_search import is_semantic_index_ready, semantic_vector_search
+        if is_semantic_index_ready():
+            hi_semantic_q = " ".join(hi_tokens[:6]) if hi_tokens else None
+            vec_hits = semantic_vector_search(
+                query,
+                limit=28,
+                extra_query=hi_semantic_q,
+                allow_non_policy=wants_noise_docs,
+            )
+            seen_vec_dirs: Set[str] = set()
+            for rank_i, vh in enumerate(vec_hits, 1):
+                v_dd = vh["doc_dir"]
+                v_cid = vh["chunk_id"]
+                v_sim = vh["similarity"]
+                v_node = _load_node_by_dir(v_dd) if v_dd else {}
+                if not wants_noise_docs and v_node.get("is_cg_policy", 1) == 0:
+                    continue
+                v_row = cur.execute(
+                    """
+                    SELECT chunk_id, doc_id, canonical_doc_id, order_no, title,
+                           doc_date, status, content
+                    FROM chunks
+                    WHERE chunk_id = ?
+                    LIMIT 1
+                    """,
+                    (v_cid,),
+                ).fetchone()
+                if v_row is not None and not _is_krutidev_toc_chunk(v_row["content"]):
+                    _record_chunk(
+                        v_row,
+                        rank_i,
+                        2.15,
+                        "semantic_vector",
+                        extra_boost=max(0.0, (v_sim - 0.42) * 0.14),
+                        vec_sim=v_sim,
+                    )
+                if v_dd and v_dd not in seen_vec_dirs and len(seen_vec_dirs) < 4:
+                    seen_vec_dirs.add(v_dd)
+                    per_v = 3 if v_dd == "4f672641e687a86e" else 1
+                    for ch_r, best_ch in enumerate(_pick_best_chunks_for_doc(v_dd, all_safe_terms, max_chunks=per_v)):
+                        if best_ch["chunk_id"] != v_cid:
+                            _record_chunk(best_ch, rank_i + ch_r, 1.45, "semantic_vector", vec_sim=round(v_sim * 0.92, 4))
+    except Exception:
+        pass
+
     # ── Rerank Candidates with Policy, Topic, Anti-Noise, Temporal & Dedup ────────
     scored_list: List[Tuple[float, Dict[str, Any]]] = []
     for cid, cdict in chunk_rows.items():
@@ -771,9 +829,13 @@ def search_gad_database(
             if "holiday_calendar" in p_topics and "leave_rules" not in p_topics and "casual_leave" not in p_topics:
                 score *= 0.22
 
-        # Demote superseded 2004/2008 contract rule if 2012/2019/2024 rules apply and query doesn't ask for 2004/2008
+        # Demote superseded 2004/2008/2019 contract copies below 2024 30-day amendment unless historical year asked
         if cdict.get("doc_id") == "def19af28b141485" and not wants_historical and "2004" not in q_low and "2008" not in q_low:
             score *= 0.42
+        if cdict.get("doc_id") == "99e5df9c5882d856" and not wants_historical and "2012" not in q_low and "2019" not in q_low:
+            score *= 0.62
+        if cdict.get("doc_id") == "0d216bddd7d0dc85" and any(k in q_low for k in ("leave", "अवकाश", "casual", "contract", "संविदा")):
+            score *= 1.35
         # Demote December-only CL warning order below the 13-day general CL circular unless Dec asked
         if cdict.get("doc_id") == "bc13bd928e8cc2be" and not any(k in q_low for k in ("december", "दिसम्बर", "दिसंबर")):
             score *= 0.58

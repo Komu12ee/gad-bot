@@ -676,8 +676,8 @@ def handle_gad_query(
         },
         {
             "kind": "retrieve",
-            "title": f"FTS5 BM25 Lexical Retrieval: Found {trace.get('retrieved_chunks', 0)} relevant clause passages",
-            "detail": {"hits": trace.get("retrieved_chunks", 0)}
+            "title": f"Vector Semantic (BGE-M3) + FTS5 Retrieval: Found {trace.get('retrieved_chunks', 0)} passages ({trace.get('semantic_hits', 0)} vector hits)",
+            "detail": {"hits": trace.get("retrieved_chunks", 0), "semantic_hits": trace.get("semantic_hits", 0)}
         },
         {
             "kind": "timeline",
@@ -816,7 +816,7 @@ def handle_gad_query_stream(
         "type": "step",
         "step": {
             "kind": "retrieve",
-            "title": "Searching clause index via SQLite FTS5 BM25...",
+            "title": "Searching 1024-d BGE-M3 semantic vectors & SQLite FTS5 BM25 index...",
             "detail": {}
         }
     })
@@ -867,8 +867,8 @@ def handle_gad_query_stream(
         },
         {
             "kind": "retrieve",
-            "title": f"FTS5 BM25 Lexical Retrieval: Found {trace.get('retrieved_chunks', 0)} relevant clause passages",
-            "detail": {"hits": trace.get("retrieved_chunks", 0)}
+            "title": f"Vector Semantic (BGE-M3) + FTS5 Retrieval: Found {trace.get('retrieved_chunks', 0)} passages ({trace.get('semantic_hits', 0)} vector hits)",
+            "detail": {"hits": trace.get("retrieved_chunks", 0), "semantic_hits": trace.get("semantic_hits", 0)}
         },
         {
             "kind": "timeline",

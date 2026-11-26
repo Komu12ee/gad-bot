@@ -200,6 +200,13 @@ class QueryEngine:
         self.r14_tmpl = load_prompt_template("R14")
         self.r16_tmpl = load_prompt_template("R16")
 
+        # 6. Pre-warm dense semantic vector index & BGE-M3 query encoder in background
+        try:
+            from src.semantic_search import warm_semantic_model
+            warm_semantic_model(background=True)
+        except Exception:
+            pass
+
     def log_trace(self, trace_record: Dict[str, Any]):
         try:
             with open(self.trace_log_path, "a", encoding="utf-8") as f:
@@ -645,8 +652,8 @@ class QueryEngine:
             st_label, ev = status_as_of(d, as_of_dt, self.edge_store)
             if (ch.get("status") or "").lower() == "superseded" and st_label == "IN_FORCE":
                 st_label = "SUPERSEDED"
-            if has_2024_contract_amend and d_id in ("99e5df9c5882d856", "53404853ad6ea068", "7e31cbb1cbe0e592"):
-                st_label = "AMENDED_BY_2024_07_10_ORDER (superseded clause: 18 days -> replaced by 30 days in D_0d216bddd7d0dc85)"
+            if d_id in ("99e5df9c5882d856", "53404853ad6ea068", "7e31cbb1cbe0e592"):
+                st_label = "AMENDED_BY_2024_07_10_ORDER (contract CL 18 days was superseded -> replaced by 30 days in 2024-07-10 Order D_0d216bddd7d0dc85)"
             c_doc_num = d.get('doc_number_raw') or ch.get('order_no') or 'N/A'
             c_dt = d.get('issue_date') or ch.get('doc_date') or 'N/A'
             cite_id = f"D_{d_id}#K{idx_f:03d}" if d_id else str(ch.get("chunk_id") or f"K{idx_f:03d}")
@@ -745,6 +752,7 @@ class QueryEngine:
             "seed_doc_ids": seed_doc_ids,
             "expanded_doc_ids": extra_doc_ids,
             "retrieved_chunks": len(candidate_chunks),
+            "semantic_hits": sum(1 for c in candidate_chunks if c.get("vec_sim")),
             "used_labels": ans_record.get("used_labels", []),
             "answerable": ans_record.get("answerable", False),
         }

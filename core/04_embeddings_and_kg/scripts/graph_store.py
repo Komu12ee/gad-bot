@@ -643,7 +643,47 @@ class TemporalGraphStore:
                     except Exception as e:
                         logger.debug(f"FTS chunks search error: {e}")
 
-            # 4. Check for Officer Match from officers table
+            # 4. Dense Vector Semantic Search (BAAI/bge-m3)
+            try:
+                from gad_kg.src.semantic_search import is_semantic_index_ready, semantic_vector_search
+                if is_semantic_index_ready():
+                    for vh in semantic_vector_search(clean_q, limit=min(25, limit)):
+                        v_dd = vh["doc_dir"]
+                        v_sim = vh["similarity"]
+                        cur.execute(
+                            "SELECT * FROM nodes WHERE doc_dir = ? OR doc_id = ? LIMIT 1;",
+                            (v_dd, v_dd),
+                        )
+                        vn_row = cur.fetchone()
+                        if not vn_row:
+                            continue
+                        vn_id = vn_row["id"]
+                        vec_score = round(v_sim * 120.0, 2)
+                        if vn_id in results_map:
+                            results_map[vn_id]["score"] += vec_score
+                            if "vector" not in str(results_map[vn_id].get("match_type", "")):
+                                results_map[vn_id]["match_type"] = f"{results_map[vn_id]['match_type']}+vector_semantic"
+                        else:
+                            results_map[vn_id] = {
+                                "id": vn_id,
+                                "order_no": vn_row["order_no"] or vn_row["label"] or "Order N/A",
+                                "doc_date": vn_row["doc_date"] or "",
+                                "year": vn_row["year"] or 0,
+                                "status": vn_row["status"] or "current",
+                                "title_hi": vn_row["title_hi"] or "",
+                                "title_en": vn_row["title_en"] or "",
+                                "summary": vn_row["summary"] or "",
+                                "category": vn_row["category"] or "",
+                                "category_id": vn_row["category_id"] or "",
+                                "match_type": "vector_semantic",
+                                "score": vec_score,
+                            }
+                        if vn_row["category_id"]:
+                            matched_hub_ids.add(f"hub_{vn_row['category_id']}")
+            except Exception as e:
+                logger.debug(f"Vector semantic search skipped in graph_store: {e}")
+
+            # 5. Check for Officer Match from officers table
             officer_match = None
             try:
                 cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='officers';")

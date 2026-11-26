@@ -19,6 +19,11 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Set
 
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+sys.modules.setdefault("torchvision", None)
+sys.modules.setdefault("torchvision.transforms", None)
+sys.modules.setdefault("torchvision.io", None)
+
 try:
     # QdrantClient itself is NOT imported: qdrant_store owns every open.
     from qdrant_client.models import VectorParams, Distance, PointStruct
